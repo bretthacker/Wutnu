@@ -15,6 +15,8 @@ The app presents as a general purpose URL shortener. Logging in enables shortene
 
 Files are uploadable via the web portal - each authenticated user gets a blob storage container in the designated storage account, linked to their login. These uploaded files can then be shortened, and the shortened URLs can be protected behind a login so they can't be lengthened until the person authenticates. Finally, queues are used to audit the URL lengthening, and a rudimentary report is available.
 
+User accounts have a rudimentary "API Key" generated that is associated with their blob container. The "BlobCopy" project is a simple console app that allows list/put/get operations against the container associated with the api key (kept in the settings file). The utility makes an API call and, for put and get operations, gets a SAS token to upload and download directly to blob storage.
+
 ISSUES:
 - There is an ARM project (WutNuRG) in the solution but it's not complete.
 - The report engine "works on my box" but rendering is having an issue in Azure - the report renders and the database is called; it may be font-related.
