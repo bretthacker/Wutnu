@@ -1,0 +1,42 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "WutNuHostingName": {
+      "value": "WutNuHost"
+    },
+    "WutNuHostingSKU": {
+      "value": "Standard"
+    },
+    "WutNuHostingWorkerSize": {
+      "value": "1"
+    },
+    "StorageConnectionString": {
+      "value": "DefaultEndpointsProtocol=https;AccountName=wutstorage;AccountKey=RqusVrgBnkmvR1L+s79ZYJoC9w/Y46xkVqBm4mz9ewVvuGCEtjpDZXqVEFDVmPp8WcRNoWMZ+k+Uzd4E3vuYVQ=="
+    },
+    "RedisConnectionString": {
+      "value": "whozin.redis.cache.windows.net:6379,abortConnect=false,ssl=false,password=QtgOB2q2cQcXiHj9anuzcUi+BCH3FMEUgT4/qQb//S8="
+    },
+    "RedisUrlDBNum": {
+      "value": "19"
+    },
+    "RedisUserDBNum": {
+      "value": "20"
+    },
+    "AADGraphKey": {
+      "value": "R4a5pl/rlu+W2MKGvTPZhUuKbODXNgXG1qJQ3yT7V8g="
+    },
+    "TenantB2B": {
+      "value": "hackerdemo.com"
+    },
+    "ClientIdB2B": {
+      "value": "8f9ee213-cec8-4cf6-a213-e09c8f49edcc"
+    },
+    "TenantB2C": {
+      "value": "blhb2c.onmicrosoft.com"
+    },
+    "ClientIdB2C": {
+      "value": "2a8ff556-1758-4b89-a0ea-1e1ae57bcd1a"
+    }
+  }
+}

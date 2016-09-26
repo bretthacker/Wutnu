@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7055a1233a7f407dbc0523eb79f1a9ff" Name="Diagram1">
+        <EntityTypeShape EntityType="wutnu3Model.ErrorLog" Width="1.5" PointX="0.5" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="wutnu3Model.Report" Width="1.5" PointX="0.5" PointY="0.5" />
+        <EntityTypeShape EntityType="wutnu3Model.UrlHistory" Width="1.5" PointX="7.5" PointY="2.875" />
+        <EntityTypeShape EntityType="wutnu3Model.User" Width="1.5" PointX="2.75" PointY="0.5" />
+        <EntityTypeShape EntityType="wutnu3Model.UserAssignment" Width="1.5" PointX="7.5" PointY="0.5" />
+        <EntityTypeShape EntityType="wutnu3Model.WutLink" Width="1.5" PointX="5.125" PointY="2" />
+        <AssociationConnector Association="wutnu3Model.FK_UrlHistories_ShortUrls" />
+        <AssociationConnector Association="wutnu3Model.FK_UserAssignment_User" />
+        <AssociationConnector Association="wutnu3Model.FK_WutLink_User" />
+        <AssociationConnector Association="wutnu3Model.FK_UserAssignment_WutLink" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

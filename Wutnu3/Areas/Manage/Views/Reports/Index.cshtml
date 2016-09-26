@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Report Manager";
+}
+<script type='text/javascript' src='~/Scripts/Lib/jquery.maskedinput.min.js'></script>
+<style type="text/css">
+    #ReportList div {
+        padding: 3px;
+        cursor: pointer;
+    }
+    #ReportViewer {
+        border: 1px solid #808080;
+        position: relative;
+    }
+
+</style>]
+
+<h2>Report Manager</h2>
+
+<div id="ReportList" class="col-xs-4" style="height:400px;overflow:auto;">
+    @foreach (var report in Model)
+    {
+        <div data-report-name="@report.ReportPath">@report.ReportName (@report.Description)</div>
+    }
+</div>
+<div id="ReportViewer" class="col-xs-8" style="height:600px;overflow:auto;">
+    
+</div>
+<script type="text/javascript">
+    $(function() {
+        $("#ReportList").on("click", "div", function (e) {
+            var report = $(e.target).data("report-name");
+            //debugger;
+            $("#ReportViewer").load("/Reports/Run/" + report + "?d=" + new Date().valueOf());
+        });
+    });
+</script> 

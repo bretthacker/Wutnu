@@ -1,0 +1,23 @@
+﻿<h3><a href="#">Members</a></h3>
+<div>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" style="border:1px solid #909090">
+<tr>
+    <td>Request Type</td>
+    <td><select id="selMemberRequestType">
+<%
+If Not IsEmpty(Session("ProfileTypes")) Then
+    For Each t in Session("ProfileTypes")
+        Response.Write "<option value='" & t & "'>" & t & "</option>"
+    Next
+End If
+%></select></td>
+</tr>
+<tr>
+    <td>Filter by Company</td>
+    <td><input type="text" size="16" id="MemberCompanyList" /></td>
+</tr>
+</table>
+<br />
+<button id="btnPrintMembers">Download</button>
+</div>
+

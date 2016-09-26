@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@using (Html.BeginForm("Index", "Manage/Gen" )) 
+{
+    <div class="jumbotron">
+        <img style="width:150px;float:right;" src="~/Content/wut.png" />
+        <h1>Wut?</h1>
+        <p class="lead">Yep. It's another URL shortener. Because we can't have too many of those.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="container">
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-warning alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    @ViewBag.Error
+                    </div>
+                }
+                <span class="btn btn-xs pull-right" id="lnkReset">Reset</span>
+                <h1>wut.nu</h1>
+                <div class="panel wut">
+                    <input style="width:100%" type="text" name="url" id="lnkUrl" value="@ViewBag.NavigateUrl" />
+                    <input type="submit" value="Create Short URL" />
+                </div>
+                <div class="panel wut">
+                    Your new shortened URL is :
+                    <input style="width:100%" type="text" id="lnkShortUrl" value="@ViewBag.ShortUrl" />
+                    @if (ViewBag.ShortUrl != null)
+                    {
+                        <div>(try it out: <a href="@ViewBag.ShortUrl" target="_blank">@ViewBag.ShortUrl</a>)</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $("#lnkReset").on("click", function () {
+            $("#lnkUrl").val("");
+            $("#lnkShortUrl").val("");
+        });
+    </script>    
+}
