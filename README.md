@@ -18,6 +18,10 @@ Files are uploadable via the web portal - each authenticated user gets a blob st
 ISSUES:
 - There is an ARM project (WutNuRG) in the solution but it's not complete.
 - The report engine "works on my box" but rendering is having an issue in Azure - the report renders and the database is called; it may be font-related.
+- If you decide to use the reports, they are designed to be run from blob storage - create a "reports" container and copy the following from Wutnu.Web/localreports:
+  - TrafficReport.cshtml
+  - TrafficReport.rdlc
+  - _ViewStart.cshtml
 - web.config has application settings commented out and is wired to look for "settings.config". You will need to comment out the settings.config call and uncomment the local settings, or create your own settings.config.
 - The ARM template has all of the application settings defined for the web app, but it's not ready for deployment yet.
 - This is sample code - it's strictly a proof of concept.
