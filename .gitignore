@@ -3,6 +3,7 @@
 
 *.jfm
 settings.config
+azuredeploy.parameters.json
 
 # User-specific files
 *.suo
