@@ -22,6 +22,11 @@ Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "WutNuRG", "WutNuRG\WutNuRG.
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Wutnu.Database", "Wutnu.Database\Wutnu.Database.sqlproj", "{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B99598D-065A-4ED1-8EF9-4F6FE429B869}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
