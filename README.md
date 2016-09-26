@@ -28,3 +28,13 @@ ISSUES:
 - The ARM template has all of the application settings defined for the web app, but it's not ready for deployment yet.
 - This is sample code - it's strictly a proof of concept.
 
+INSTALLATION:
+- Setup an Azure Web App in a new Resource Group - place all the other resources in this group
+  - https://azure.microsoft.com/en-us/documentation/services/app-service/web/ 
+- Create a Storage Account
+  - https://azure.microsoft.com/en-us/documentation/services/storage/ 
+- Create a Redis Cache
+  - https://azure.microsoft.com/en-us/documentation/services/redis-cache/
+- Create a SQL DB
+  - https://azure.microsoft.com/en-us/documentation/services/sql-database/
+- 
