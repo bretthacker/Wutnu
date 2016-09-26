@@ -78,3 +78,5 @@ For the Azure Active Directory settings, please see the following articles for d
 
 - [https://azure.microsoft.com/en-us/documentation/articles/active-directory-devquickstarts-webapp-dotnet/](https://azure.microsoft.com/en-us/documentation/articles/active-directory-devquickstarts-webapp-dotnet/)
 - [https://azure.microsoft.com/en-us/documentation/services/active-directory-b2c/](https://azure.microsoft.com/en-us/documentation/services/active-directory-b2c/)
+
+For your primary AAD, create a group named "WutNuAdmins" and add any users that need access to the error logs.
