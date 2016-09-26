@@ -1,0 +1,439 @@
+﻿@using System.Data
+@using System.Data.SqlClient
+@using System.Text
+@using System.Web.UI.HtmlControls
+@using LNEC.Data
+@using LNEC.Model
+@using LNEC.UtilityLibrary.ErrorMgr
+@using LNEC_Admin.InfraStructure
+@using Utility = LNEC.UtilityLibrary.Utility
+
+@inherits System.Web.Mvc.WebViewPage
+
+@{
+    Layout = "";
+    if (!HttpContext.Current.User.IsInRole("Contest Results"))
+    {
+        HttpContext.Current.Response.Write("Sorry, you are not authorized to execute this report. Please contact your department administrator.");
+        HttpContext.Current.Response.End();
+    }
+    if (Context.Request.QueryString["Download"] == "Download")
+    {
+        var req = HttpContext.Current.Request;
+        var connectionString = new LNECEntities().Database.Connection.ConnectionString;
+        var contestId = Convert.ToInt32(req.QueryString["c"]);
+        var startDate = req.QueryString["sd"] ?? req.QueryString["cd"];
+
+        using (var conn = new SqlConnection(connectionString))
+        {
+            conn.Open();
+            switch (HttpContext.Current.Request.QueryString["rt"])
+            {
+                case "HTML":
+                    ProcessHtmlRequest(conn, contestId, startDate, req.QueryString["cn"]);
+                    break;
+                case "Excel":
+                    ProcessExcelRequest(conn, contestId, startDate, HttpContext.Current.Response, req.QueryString["cn"]);
+                    break;
+                case "PDF":
+                    ProcessRequest(conn, req, contestId, startDate);
+                    break;
+            }
+            conn.Close();
+            Context.Response.End();
+        }
+    }
+}
+
+@functions {
+    readonly int _deptId = Convert.ToInt32(Utility.GetClaim(HttpContext.Current, ClaimTypesLNEC.DeptID));
+    private SqlConnection _conn;
+    protected void ProcessRequest(SqlConnection conn, HttpRequest req, int contestId, string startDate)
+    {
+        _conn = conn;
+        var reports = new LNEC.BusinessLayer.ReportsBusinessLayer(new HttpContextWrapper(HttpContext.Current));
+
+       
+        reports.ReportPath = "~/Views/Reports/Blob/contestresults.rdlc";
+        var parms = new Dictionary<string, string>
+            {
+                {"StartDate", startDate},
+                {"ContestName", req.QueryString["cn"]},
+                {"DepartmentName", Utility.GetClaim(HttpContext.Current, ClaimTypesLNEC.DeptName)},
+                {"OtherColumnHeader", GetCols(contestId)},
+                {"NumRecs", "0"}
+            };
+
+        reports.ReportType = req.QueryString["rt"];
+        
+        reports.FileName = "ContestResults" + reports.GetReportExtension();
+
+        var reportDef = new BlobVirtualFile(reports.ReportPath).Open();
+        
+        //hack to get the count from the datareader; having to call it twice - blech
+        var rdr = GetContestData(startDate, contestId);
+        var dt = new DataTable();
+        dt.Load(rdr);
+        var numRows = dt.Rows.Count;
+        parms["NumRecs"] = numRows.ToString();
+        rdr = GetContestData(startDate, contestId);
+        
+        reports.WriteOut(reports.GetReport(
+            reportDef,
+            "ContestResults",
+            rdr,
+            parms
+            ));
+    }
+    
+    protected SqlDataReader GetContestData(string startDate, int contestId)
+    {
+        var s = new StringBuilder();
+
+        s.Append("DECLARE @cols VARCHAR(1000)");
+        s.Append("SELECT @cols =");
+        s.Append("    STUFF(");
+        s.Append("	    (SELECT distinct ', ' + ced.KeyName");
+        s.Append("	       FROM [CMS_ContestEnrollmentData] ced LEFT JOIN [CMS_ContestEnrollment] ce ON (ce.ID=ced.CMS_ContestEnrollmentID)");
+        s.Append("	       WHERE ce.CMS_ContestID=@ContestID");
+        s.Append("	       FOR XML PATH('')");
+        s.Append("	    ), 1, 2, '');");
+
+        s.Append("DECLARE @sql VARCHAR(2000);");
+        s.Append("SET @sql =");
+        s.Append("'SELECT DISTINCT CONVERT(varchar(12),ce.DateAdded,101) AS DateAdded, ce.FirstName, ce.LastName, CONVERT(varchar(12), ce.DOB, 101) AS DOB, ce.EmailAddress, ce.ZipCode, ");
+        s.Append("STUFF(");
+        s.Append("	    (SELECT distinct '', '' + ced2.KeyValue");
+        s.Append("	       FROM [CMS_ContestEnrollmentData] ced2 WHERE ced2.CMS_ContestEnrollmentID=ce.ID");
+        s.Append("	       FOR XML PATH(''''))");
+        s.Append("	       , 1, 2, '''') AS Other");
+
+        s.Append("    FROM [CMS_ContestEnrollment] ce LEFT JOIN [CMS_ContestEnrollmentData] ced ON (ce.ID=ced.CMS_ContestEnrollmentID)");
+        s.Append("	    INNER JOIN CMS_Contest c ON (ce.CMS_ContestID = c.ID)");
+        s.Append("	       WHERE c.DepartmentID=' + CAST(@DeptID AS varchar(5)) + ' AND ce.CMS_ContestID=' + CAST(@ContestID AS varchar(5)) + '");
+        s.Append("  AND ce.DateAdded >= ''' + @StartDate + ''''");
+
+        s.Append(" EXEC(@sql)");
+        
+        using (var comm = new SqlCommand
+            {
+                Connection = _conn,
+                CommandType = CommandType.Text,
+                CommandText = s.ToString()
+            }) {
+            comm.Parameters.AddWithValue("@DeptID", _deptId);
+            comm.Parameters.AddWithValue("@ContestID", contestId);
+            comm.Parameters.AddWithValue("@StartDate", startDate);
+            //WriteDebugInfoToErrorLog("startDate: " + startDate + "\n\rquery:\n\r " + s);
+            
+            return comm.ExecuteReader();
+        }
+    }
+
+    protected string GetCols(int contestId)
+    {
+        var s = new StringBuilder();
+        
+        s.Append("SELECT DISTINCT STUFF(");
+	    s.Append("    (SELECT distinct ', ' + ced.KeyName");
+	    s.Append("    FROM [CMS_ContestEnrollmentData] ced INNER JOIN CMS_ContestEnrollment ce ON (ce.id=ced.CMS_ContestEnrollmentID)");
+	    s.Append("    INNER JOIN CMS_Contest c ON (c.id=ce.CMS_ContestID) WHERE c.id=@ContestID");
+	    s.Append("    FOR XML PATH(''))");
+        s.Append(", 1, 2, '') AS Cols");
+
+        using (var comm = new SqlCommand
+            {
+                Connection = _conn,
+                CommandType = CommandType.Text,
+                CommandText = s.ToString()
+            })
+        {
+            comm.Parameters.AddWithValue("@ContestID", contestId);
+
+            //var message = String.Format("SQL: \r\n{0}\r\nParms: \r\n ContestID={1}", comm.CommandText, _contestId);
+            //WriteDebugInfoToErrorLog(message);
+
+            var o = comm.ExecuteReader();
+            var res = "N/A";
+            if (o.HasRows)
+            {
+                try
+                {
+                    o.Read();
+                    res = o.GetFieldValue<string>(0);
+                }
+                catch
+                {
+                    res = "Unknown"; 
+                }
+            }
+            return res;
+        }
+    }
+    protected void WriteDebugInfoToErrorLog(string message)
+    {
+        using (var emgr = new ErrorMgr(ErrorDest.Sql))
+        {
+            emgr.InsertError(new Exception("Debugging Message"), message);
+        }
+    }
+
+    protected void ProcessExcelRequest(SqlConnection conn, int contestId, string startDate, HttpResponse res, string title)
+    {
+        _conn = conn;
+        var rdr = GetContestDataHtml(startDate, contestId);
+        string fileDate;
+        DateTime oFileDate;
+        DateTime.TryParse(startDate, null, System.Globalization.DateTimeStyles.AssumeLocal, out oFileDate);
+        fileDate = oFileDate.ToString("yyyyMMdd");
+        res.ContentType = "application/vnd.ms-excel";
+        res.AddHeader("expires", "0");
+        res.AddHeader("content-disposition", String.Format("attachment; filename={1}_{0}_ContestResults.csv", title, fileDate));
+        
+        //Response.Write(GetHtml(rdr, title, true));
+        Response.Write(GetCsv(rdr));
+    }
+    protected void ProcessHtmlRequest(SqlConnection conn, int contestId, string startDate, string title)
+    {
+        _conn = conn;
+
+        var rdr = GetContestDataHtml(startDate, contestId);
+        Response.Write(GetHtml(rdr, title, false));
+    }
+
+    protected string GetCsv(SqlDataReader rdr)
+    {
+        var dataTable = new DataTable();
+        dataTable.Load(rdr);
+        return DataTableToCsv(dataTable);
+    }
+    protected string DataTableToCsv(DataTable dt)
+    {
+        var sb = new StringBuilder();
+
+        var columnNames = dt.Columns.Cast<DataColumn>().Select(column => "\"" + column.ColumnName.Replace("\"", "\"\"") + "\"").ToArray();
+        sb.AppendLine(string.Join(",", columnNames));
+
+        foreach (DataRow row in dt.Rows)
+        {
+            var fields = row.ItemArray.Select(field => "\"" + field.ToString().Replace("\"", "\"\"") + "\"").ToArray();
+            sb.AppendLine(string.Join(",", fields));
+        }
+        return sb.ToString();
+    }
+    protected string GetHtml(SqlDataReader rdr, string title, bool isExcel)
+    {
+        var dataTable = new DataTable();
+        dataTable.Load(rdr);
+        using (var tblData = new HtmlTable())
+        {
+            tblData.CellPadding = 3;
+            tblData.CellSpacing = 0;
+            tblData.Border = 1;
+            tblData.BorderColor = "#cccccc";
+            
+            var htmlRow = new HtmlTableRow();
+            htmlRow.Attributes.Add("class", "head");
+            foreach (var col in dataTable.Columns)
+            {
+                var htmlCell = new HtmlTableCell { InnerText = col.ToString() };
+                htmlRow.Cells.Add(htmlCell);
+            }
+            tblData.Rows.Add(htmlRow);
+
+            if (dataTable.Rows.Count > 0)
+            {
+                for (var row = 0; row < dataTable.Rows.Count; row++)
+                {
+                    htmlRow = new HtmlTableRow();
+                    for (var col = 0; col < dataTable.Columns.Count; col++)
+                    {
+                        var htmlCell = new HtmlTableCell {InnerText = dataTable.Rows[row][col].ToString()};
+                        htmlRow.Cells.Add(htmlCell);
+                    }
+                    tblData.Rows.Add(htmlRow);
+                }
+            }
+            else
+            {
+                htmlRow = new HtmlTableRow();
+                var htmlCell = new HtmlTableCell { InnerText = "No records found; please check your search criteria." };
+                htmlCell.ColSpan = dataTable.Columns.Count;
+                htmlRow.Cells.Add(htmlCell);
+                tblData.Rows.Add(htmlRow);
+            }
+            var sw = new StringWriter();
+            var htw = new HtmlTextWriter(sw);
+            tblData.RenderControl(htw);
+            return GetHtmlPage(sw.ToString(), title, isExcel);
+        }
+    }
+
+    protected string GetHtmlPage(string content, string title, bool isExcel)
+    {
+        var s = new StringBuilder();
+        if (isExcel)
+        {
+            s.AppendLine("<html xmlns:v=\"urn:schemas-microsoft-com:vml\"");
+            s.AppendLine("xmlns:o=\"urn:schemas-microsoft-com:office:office\"");
+            s.AppendLine("xmlns:x=\"urn:schemas-microsoft-com:office:excel\"");
+            s.AppendLine("xmlns=\"http://www.w3.org/TR/REC-html40\">");
+
+            s.AppendFormat("<head><title>{0}</title>", title);
+            s.AppendLine("<meta http-equiv=Content-Type content=\"text/html; charset=us-ascii\">");
+        }
+        else
+        {
+            s.AppendLine("<html>");
+            s.AppendFormat("<head><title>{0}</title>", title);
+        }
+
+        s.AppendLine("<style> table {border-collapse:collapse;background-color:white;border:1px solid #dddddd;} tr.head td {font-weight:bold;background-color:#aaaaaa;color:white;padding:4px;} td {font:10pt arial;padding:3px;border:1px solid #dddddd;} body {font:10pt arial;}</style></head><body>");
+        s.AppendFormat("<h3>{0}</h3>", title);
+        s.AppendLine(content);
+        s.AppendLine("</body></html>");
+        return s.ToString();
+    }
+
+    protected SqlDataReader GetContestDataHtml(string startDate, int contestId)
+    {
+        //this pivots the extra data into additional columns; need to figure out how to dynamically gen those columns in the layout
+        var s = new StringBuilder();
+        
+        s.Append("DECLARE @cols VARCHAR(1000)");
+        s.Append("SELECT @cols =");
+	    s.Append("    STUFF(");
+		s.Append("        (SELECT distinct '], [' + ced.KeyName");
+        s.Append("           FROM [CMS_ContestEnrollmentData] ced LEFT JOIN [CMS_ContestEnrollment] ce ON (ce.ID=ced.CMS_ContestEnrollmentID)");
+		s.Append("           WHERE ce.CMS_ContestID=@ContestID");
+        s.Append("           FOR XML PATH('')");
+        s.Append("        ), 1, 2, '') + ']';");
+
+        s.Append("DECLARE @sql VARCHAR(2000);");
+        s.Append("SET @sql =");
+        s.Append("'SELECT * ' +");
+        s.Append("'FROM (SELECT ce.ID, ce.DateAdded, ce.FirstName, ce.LastName, ce.DOB, ce.EmailAddress, ce.ZipCode, ced.KeyName, ced.KeyValue");
+        s.Append("      FROM [CMS_ContestEnrollment] ce LEFT JOIN [CMS_ContestEnrollmentData] ced ON (ce.ID=ced.CMS_ContestEnrollmentID)");
+	    s.Append("      INNER JOIN [CMS_Contest] c ON (ce.CMS_ContestID = c.ID) WHERE c.DepartmentID=' + CAST(@DeptID AS varchar(5)) + ");
+        s.Append("      ' AND ce.DateAdded >= ''' + @StartDate + ''' AND ce.CMS_ContestID=' + CAST(@ContestID AS varchar(5)) + ') AS InputTable ' +");
+        s.Append("        'PIVOT ' +");
+        s.Append("'(MAX(KeyValue) FOR KeyName IN (' + @cols + ')) AS PivotTable;';");
+        s.Append("EXEC(@sql)");
+
+        using (var comm = new SqlCommand
+        {
+            Connection = _conn,
+            CommandType = CommandType.Text,
+            CommandText = s.ToString()
+        })
+        {
+            comm.Parameters.AddWithValue("@DeptID", _deptId);
+            comm.Parameters.AddWithValue("@ContestID", contestId);
+            comm.Parameters.AddWithValue("@StartDate", startDate);
+            //WriteDebugInfoToErrorLog("startDate: " + startDate + "\n\rquery:\n\r " + s);
+
+            return comm.ExecuteReader();
+        }
+    }
+}
+@{
+    var reportVersion = "[% ReportVersion %]";
+    if (reportVersion == "[% ReportVersion %]") { reportVersion = "1.0"; }
+    IEnumerable<CMS_Contest> list = new LNEC.BusinessLayer.CmsContestBusinessLayer(new HttpContextWrapper(HttpContext.Current)).GetDepartmentContests();
+}
+<style type="text/css">
+    table {
+        border-spacing: 5px;
+    }
+    #reportMain {
+        background-color: #efefef;
+        padding: 4px;
+    }
+    #reportHeader {
+        padding: 3px;
+        background-color: #808080;
+        color: #efefef;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+</style>
+<div id="reportMain">
+    <form method="Get" id="frmMain" action="/Reports/Run/contestresults.cshtml" onsubmit="return validate();">
+        <div id="reportHeader">Contest Results</div>
+        <div id="divSponsorParms">
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                <tr>
+                    <td>Select Contest</td>
+                    <td><select id="rptContest" name="c">
+                            <option value="0">Select...</option>
+                            @foreach (var contest in list)
+                            {
+                                <option data-name="@contest.ContestName" data-startdate="@contest.StartDate.ToShortDateString()" value="@contest.ID">@contest.ContestName (starting @contest.StartDate.ToShortDateString() )</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Report Type</td>
+                    <td><select id="rptReportType" name="rt">
+                           <option value="PDF">PDF</option>
+                            <option value="Excel">Excel</option>
+                            <option value="HTML">HTML</option>
+                        </select></td>
+                </tr>
+                <tr>
+                    <td>Start Date</td>
+                    <td><input type="text" id="StartDate" name="sd"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" id="Download" name="Download" value="Download" disabled="disabled" />
+                        <input type="hidden" name="cn" id="cn" />
+                        <input type="hidden" name="cd" id="cd" />
+                        <div style="color:#808080;font-style:italic;margin-top:8px;">
+                            Version: <span id="ReportVersion">@reportVersion</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script>
+            $(function () {
+                $("#StartDate").datepicker();
+                $("#rptContest").on("change", function () {
+                    if ($("#rptContest").val() == "0") {
+                        $("#Download").attr("disabled", "disabled");
+                        return;
+                    }
+                    $("#Download").removeAttr("disabled");
+                    var o = $("#rptContest option").filter(":selected").data();
+                    $("#cn").val(o.name);
+                    $("#cd").val(o.startdate);
+                });
+            });
+
+            function validate() {
+                if ($("#rptReportType").val() != "HTML") return true;
+                
+                $.get("/Reports/Run/contestresults.cshtml?Download=Download&" + $("#frmMain").serialize(), function (data) {
+                    $("<div/>").html(data).wijdialog({
+                        title: "Search Results",
+                        width: 1000,
+                        height: 600,
+                        captionButtons: {
+                            pin: { visible: false },
+                            refresh: { visible: false },
+                            toggle: { visible: false }
+                        },
+                        buttons: {
+                            OK: function () {
+                                $(this).wijdialog("close").remove();
+                            }
+                        }
+                    });
+                });
+                return false;
+            }
+        </script>
+    </form>
+</div>

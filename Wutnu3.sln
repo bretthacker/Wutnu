@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wutnu.Web", "Wutnu3\Wutnu.Web.csproj", "{07D1C353-4626-4D20-A804-531517BCF3F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A5BAB439-D66F-4E73-A66C-2A2A18DC2505}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wutnu.Data", "Wutnu3.data\Wutnu.Data.csproj", "{F69A0EC8-E100-403E-A08D-44817540CCE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wutnu.Common", "Wutnu.Common\Wutnu.Common.csproj", "{05BE51FB-F26E-463A-9C68-FE08A4DB7C49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuditDequeue", "AuditDequeue\AuditDequeue.csproj", "{BFE77ACA-9DAB-4788-9A0A-4DB5D1EF0014}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "WutNuRG", "WutNuRG\WutNuRG.deployproj", "{DA08050F-6CCB-4850-891A-DEC3813C6D2B}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Wutnu.Database", "Wutnu.Database\Wutnu.Database.sqlproj", "{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07D1C353-4626-4D20-A804-531517BCF3F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07D1C353-4626-4D20-A804-531517BCF3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07D1C353-4626-4D20-A804-531517BCF3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07D1C353-4626-4D20-A804-531517BCF3F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F69A0EC8-E100-403E-A08D-44817540CCE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F69A0EC8-E100-403E-A08D-44817540CCE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F69A0EC8-E100-403E-A08D-44817540CCE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F69A0EC8-E100-403E-A08D-44817540CCE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05BE51FB-F26E-463A-9C68-FE08A4DB7C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05BE51FB-F26E-463A-9C68-FE08A4DB7C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05BE51FB-F26E-463A-9C68-FE08A4DB7C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05BE51FB-F26E-463A-9C68-FE08A4DB7C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFE77ACA-9DAB-4788-9A0A-4DB5D1EF0014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFE77ACA-9DAB-4788-9A0A-4DB5D1EF0014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFE77ACA-9DAB-4788-9A0A-4DB5D1EF0014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFE77ACA-9DAB-4788-9A0A-4DB5D1EF0014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA08050F-6CCB-4850-891A-DEC3813C6D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA08050F-6CCB-4850-891A-DEC3813C6D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA08050F-6CCB-4850-891A-DEC3813C6D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA08050F-6CCB-4850-891A-DEC3813C6D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9DFDD7-0161-4E77-8AD6-22BC60E655F7}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
