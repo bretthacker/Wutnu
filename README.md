@@ -29,12 +29,52 @@ ISSUES:
 - This is sample code - it's strictly a proof of concept.
 
 INSTALLATION:
-- Setup an Azure Web App in a new Resource Group - place all the other resources in this group
-  - https://azure.microsoft.com/en-us/documentation/services/app-service/web/ 
+- Setup an Azure Web App in a new Resource Group (place all the other resources in this group)
+  - [https://azure.microsoft.com/en-us/documentation/services/app-service/web/](https://azure.microsoft.com/en-us/documentation/services/app-service/web/)
 - Create a Storage Account
-  - https://azure.microsoft.com/en-us/documentation/services/storage/ 
+  - [https://azure.microsoft.com/en-us/documentation/services/storage/](https://azure.microsoft.com/en-us/documentation/services/storage/)
 - Create a Redis Cache
-  - https://azure.microsoft.com/en-us/documentation/services/redis-cache/
+  - [https://azure.microsoft.com/en-us/documentation/services/redis-cache/](https://azure.microsoft.com/en-us/documentation/services/redis-cache/)
 - Create a SQL DB
-  - https://azure.microsoft.com/en-us/documentation/services/sql-database/
-- 
+  - [https://azure.microsoft.com/en-us/documentation/services/sql-database/](https://azure.microsoft.com/en-us/documentation/services/sql-database/)
+- The web app has a lot of custom settings that you might like to use in Azure. Typically, you will use some settings while developing in Visual Studio, then different settings in Azure, and possibly different settings for each slot of your app in Azure. If you want to have settings in Azure override the settings in your deployed web.config, you can use the following PowerShell:
+  
+```powershell
+$webappname="wuttest"
+$webappRG="wuttest"
+
+Add-AzureRmAccount
+#Set-AzureRmContext -SubscriptionName "yourSubscriptionName"
+
+$settings=@{
+    "DomainName" = "localhost:44316";
+    "RedisConnection" = "[parameters('RedisConnectionString')]";
+    "RedisUrlDBNum" = "[parameters('RedisUrlDBNum')]";
+    "RedisUserDBNum" = "[parameters('RedisUserDBNum')]";
+    "StorageConnectionString" = "[parameters('StorageConnectionString')]";
+    "GraphKey" = "[parameters('AADGraphKey')]";
+    "ActivateWebApiTracing" = "false";
+    "ida:AadInstance" = "https://login.microsoftonline.com/{0}";
+    "ida:RedirectUri" = "https://localhost:44316";
+    "ida:TenantB2B" = "[parameters('TenantB2B')]";
+    "ida:ClientIdB2B" = "[parameters('ClientIdB2B')]";
+    "ida:TenantB2C" = "[parameters('TenantB2C')]";
+    "ida:ClientIdB2C" = "[parameters('ClientIdB2C')]";
+    "ida:SignUpPolicyId" = "B2C_1_DefaultSignup";
+    "ida:SignInPolicyId" = "B2C_1_DefaultSignin";
+    "ida:UserProfilePolicyId" = "B2C_1_DefaultProfileEditPolicy";
+    "ConfigStorageCors" = "true";
+    "Environment" = "[parameters('DeploymentEnvironment')]";
+    "LocalReports" = "false";
+    "EnableDashboardLogging" = "true"
+}
+
+Set-AzureRmWebApp -AppSettings $settings -Name $webappname -ResourceGroupName $webappRG
+```
+
+For each of those settings, either in the Azure web application settings, or in your web.config, you'll need to populate the values from the services you just spun up.
+
+For the Azure Active Directory settings, please see the following articles for details:
+
+- [https://azure.microsoft.com/en-us/documentation/articles/active-directory-devquickstarts-webapp-dotnet/](https://azure.microsoft.com/en-us/documentation/articles/active-directory-devquickstarts-webapp-dotnet/)
+- [https://azure.microsoft.com/en-us/documentation/services/active-directory-b2c/](https://azure.microsoft.com/en-us/documentation/services/active-directory-b2c/)
