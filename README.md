@@ -37,7 +37,7 @@ INSTALLATION:
   - [https://azure.microsoft.com/en-us/documentation/services/redis-cache/](https://azure.microsoft.com/en-us/documentation/services/redis-cache/)
 - Create a SQL DB
   - [https://azure.microsoft.com/en-us/documentation/services/sql-database/](https://azure.microsoft.com/en-us/documentation/services/sql-database/)
-- The web app has a lot of custom settings that you might like to use in Azure. Typically, you will use some settings while developing in Visual Studio, then different settings in Azure, and possibly different settings for each slot of your app in Azure. If you want to have settings in Azure override the settings in your deployed web.config, you can use the following PowerShell:
+- The web app has a lot of custom settings that you might like to use in Azure. Typically, you will use some settings while developing in Visual Studio, then different settings in Azure, and possibly different settings for each slot of your app in Azure. If you want to have settings in Azure override the settings in your deployed web.config, you can use the following PowerShell to make it easier to establish the name/value pairs in your app:
   
 ```powershell
 $webappname="wuttest"
