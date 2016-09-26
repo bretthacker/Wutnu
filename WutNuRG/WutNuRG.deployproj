@@ -33,6 +33,7 @@
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <Content Include="Templates\azuredeploy.json" />
+    <None Include="Templates\azuredeploy.parameters.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wutnu3\Wutnu.Web.csproj">

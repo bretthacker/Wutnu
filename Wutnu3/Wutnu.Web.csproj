@@ -541,6 +541,7 @@
     <Content Include="Scripts\lib\azure.jquery.fine-uploader\LICENSE" />
     <Content Include="Scripts\jquery-2.2.4.min.map" />
     <Content Include="Views\Healthcheck\Index.cshtml" />
+    <Content Include="settings.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
