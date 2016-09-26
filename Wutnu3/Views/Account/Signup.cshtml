@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Signup";
+}
+
+<h2>Signup</h2>
+
+<div>
+    <p>You can access Wut.nu two ways:
+    <ul>
+        <li>With a local or social account</li>
+        <li>With an Azure Active Directory Work account</li>
+    </ul>
+    If you want to see if you have access via a Work account, click Login above. If you'd like to establish a separate, new account here, either
+    based on another identity provider (like Facebook) or via your email address, click the button below.
+    </p>
+    <center>
+        <input type="button" style="margin:10px;width:150px" class="btn btn-primary" onclick="window.location.href = '/Account/SignUpB2C?redir=@ViewBag.Redir'" value="Sign Up" />
+    </center>
+</div>

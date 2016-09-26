@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="wutnu3Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ErrorLogs">
+          <Key>
+            <PropertyRef Name="ErrorId" />
+          </Key>
+          <Property Name="ErrorId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ErrorDate" Type="datetime" Nullable="false" />
+          <Property Name="ErrorMessage" Type="nvarchar(max)" />
+          <Property Name="CallStack" Type="nvarchar(max)" />
+          <Property Name="UserAgent" Type="nvarchar(max)" />
+          <Property Name="IPAddress" Type="nvarchar(max)" />
+          <Property Name="UserComment" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar(max)" />
+          <Property Name="ValidationErrors" Type="nvarchar(max)" />
+          <Property Name="ErrorSource" Type="nvarchar(max)" />
+          <Property Name="StackTrace" Type="nvarchar(max)" />
+          <Property Name="InnerExceptionSource" Type="nvarchar(max)" />
+          <Property Name="QSData" Type="nvarchar(max)" />
+          <Property Name="PostData" Type="nvarchar(max)" />
+          <Property Name="Referrer" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar(max)" />
+          <Property Name="UserName" Type="nvarchar(max)" />
+          <Property Name="InnerExceptionMessage" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="ReportId" />
+          </Key>
+          <Property Name="ReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReportName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReportPath" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CreateDate" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="UrlHistory">
+          <Key>
+            <PropertyRef Name="HistoryId" />
+          </Key>
+          <Property Name="HistoryId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WutLinkId" Type="int" Nullable="false" />
+          <Property Name="CallDate" Type="datetime" Nullable="false" />
+          <Property Name="HostIp" Type="varchar" MaxLength="64" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserOID" Type="nvarchar" MaxLength="128" />
+          <Property Name="PrimaryEmail" Type="nvarchar" MaxLength="128" />
+          <Property Name="ExtClaims" Type="varchar(max)" />
+          <Property Name="ApiKey" Type="nvarchar" MaxLength="128" />
+        </EntityType>
+        <EntityType Name="UserAssignment">
+          <Key>
+            <PropertyRef Name="UserAssignmentId" />
+          </Key>
+          <Property Name="UserAssignmentId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WutLinkId" Type="int" Nullable="false" />
+          <Property Name="UserEmail" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="WutLink">
+          <Key>
+            <PropertyRef Name="WutLinkId" />
+          </Key>
+          <Property Name="WutLinkId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShortUrl" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedByIp" Type="varchar" MaxLength="64" />
+          <Property Name="IsProtected" Type="bit" Nullable="false" />
+          <Property Name="RealUrl" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar(max)" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="IsAzureBlob" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_UrlHistories_ShortUrls">
+          <End Role="WutLink" Type="Self.WutLink" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UrlHistory" Type="Self.UrlHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WutLink">
+              <PropertyRef Name="WutLinkId" />
+            </Principal>
+            <Dependent Role="UrlHistory">
+              <PropertyRef Name="WutLinkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAssignments_ShortUrls">
+          <End Role="WutLink" Type="Self.WutLink" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserAssignment" Type="Self.UserAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WutLink">
+              <PropertyRef Name="WutLinkId" />
+            </Principal>
+            <Dependent Role="UserAssignment">
+              <PropertyRef Name="WutLinkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WutLink_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="WutLink" Type="Self.WutLink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="WutLink">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="usp_AddHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ShortUrl" Type="nvarchar" Mode="In" />
+          <Parameter Name="CallDate" Type="datetime2" Mode="In" />
+          <Parameter Name="UserId" Type="int" Mode="In" />
+          <Parameter Name="HostIp" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="wutnu3ModelStoreContainer">
+          <EntitySet Name="ErrorLogs" EntityType="Self.ErrorLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UrlHistory" EntityType="Self.UrlHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserAssignment" EntityType="Self.UserAssignment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WutLink" EntityType="Self.WutLink" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_UrlHistories_ShortUrls" Association="Self.FK_UrlHistories_ShortUrls">
+            <End Role="WutLink" EntitySet="WutLink" />
+            <End Role="UrlHistory" EntitySet="UrlHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAssignments_ShortUrls" Association="Self.FK_UserAssignments_ShortUrls">
+            <End Role="WutLink" EntitySet="WutLink" />
+            <End Role="UserAssignment" EntitySet="UserAssignment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WutLink_User" Association="Self.FK_WutLink_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="WutLink" EntitySet="WutLink" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="wutnu3Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ErrorLog">
+          <Key>
+            <PropertyRef Name="ErrorId" />
+          </Key>
+          <Property Name="ErrorId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ErrorDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CallStack" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserAgent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IPAddress" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ValidationErrors" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="InnerExceptionSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="QSData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PostData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Referrer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="InnerExceptionMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="WutNuContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ErrorLogs" EntityType="Self.ErrorLog" />
+          <FunctionImport Name="usp_AddHistory">
+            <Parameter Name="ShortUrl" Mode="In" Type="String" />
+            <Parameter Name="CallDate" Mode="In" Type="DateTime" />
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="HostIp" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Reports" EntityType="wutnu3Model.Report" />
+          <EntitySet Name="UrlHistories" EntityType="wutnu3Model.UrlHistory" />
+          <EntitySet Name="Users" EntityType="wutnu3Model.User" />
+          <EntitySet Name="UserAssignments" EntityType="wutnu3Model.UserAssignment" />
+          <EntitySet Name="WutLinks" EntityType="wutnu3Model.WutLink" />
+          <AssociationSet Name="FK_UrlHistories_ShortUrls" Association="wutnu3Model.FK_UrlHistories_ShortUrls">
+            <End Role="WutLink" EntitySet="WutLinks" />
+            <End Role="UrlHistory" EntitySet="UrlHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAssignment_User" Association="wutnu3Model.FK_UserAssignment_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserAssignment" EntitySet="UserAssignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WutLink_User" Association="wutnu3Model.FK_WutLink_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="WutLink" EntitySet="WutLinks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserAssignment_WutLink" Association="wutnu3Model.FK_UserAssignment_WutLink">
+            <End Role="WutLink" EntitySet="WutLinks" />
+            <End Role="UserAssignment" EntitySet="UserAssignments" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="ReportId" />
+          </Key>
+          <Property Name="ReportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreateDate" Type="DateTime" Precision="7" />
+          <Property Name="ReportName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReportPath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UrlHistory">
+          <Key>
+            <PropertyRef Name="HistoryId" />
+          </Key>
+          <Property Name="HistoryId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WutLinkId" Type="Int32" Nullable="false" />
+          <Property Name="CallDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HostIp" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="WutLink" Relationship="wutnu3Model.FK_UrlHistories_ShortUrls" FromRole="UrlHistory" ToRole="WutLink" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserOID" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="PrimaryEmail" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ExtClaims" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserAssignments" Relationship="wutnu3Model.FK_UserAssignment_User" FromRole="User" ToRole="UserAssignment" />
+          <NavigationProperty Name="WutLinks" Relationship="wutnu3Model.FK_WutLink_User" FromRole="User" ToRole="WutLink" />
+          <Property Name="ApiKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UserAssignment">
+          <Key>
+            <PropertyRef Name="UserAssignmentId" />
+          </Key>
+          <Property Name="UserAssignmentId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WutLinkId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="UserEmail" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="wutnu3Model.FK_UserAssignment_User" FromRole="UserAssignment" ToRole="User" />
+          <NavigationProperty Name="WutLink" Relationship="wutnu3Model.FK_UserAssignment_WutLink" FromRole="UserAssignment" ToRole="WutLink" />
+        </EntityType>
+        <EntityType Name="WutLink">
+          <Key>
+            <PropertyRef Name="WutLinkId" />
+          </Key>
+          <Property Name="WutLinkId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="ShortUrl" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedByIp" Type="String" MaxLength="64" FixedLength="false" Unicode="false" />
+          <Property Name="IsProtected" Type="Boolean" Nullable="false" />
+          <Property Name="RealUrl" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UrlHistories" Relationship="wutnu3Model.FK_UrlHistories_ShortUrls" FromRole="WutLink" ToRole="UrlHistory" />
+          <NavigationProperty Name="User" Relationship="wutnu3Model.FK_WutLink_User" FromRole="WutLink" ToRole="User" />
+          <NavigationProperty Name="UserAssignments" Relationship="wutnu3Model.FK_UserAssignment_WutLink" FromRole="WutLink" ToRole="UserAssignment" />
+          <Property Name="IsAzureBlob" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_UrlHistories_ShortUrls">
+          <End Type="wutnu3Model.WutLink" Role="WutLink" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wutnu3Model.UrlHistory" Role="UrlHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WutLink">
+              <PropertyRef Name="WutLinkId" />
+            </Principal>
+            <Dependent Role="UrlHistory">
+              <PropertyRef Name="WutLinkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAssignment_User">
+          <End Type="wutnu3Model.User" Role="User" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wutnu3Model.UserAssignment" Role="UserAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserAssignment">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WutLink_User">
+          <End Type="wutnu3Model.User" Role="User" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="wutnu3Model.WutLink" Role="WutLink" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="WutLink">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserAssignment_WutLink">
+          <End Type="wutnu3Model.WutLink" Role="WutLink" Multiplicity="1" />
+          <End Type="wutnu3Model.UserAssignment" Role="UserAssignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WutLink">
+              <PropertyRef Name="WutLinkId" />
+            </Principal>
+            <Dependent Role="UserAssignment">
+              <PropertyRef Name="WutLinkId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="wutnu3ModelStoreContainer" CdmEntityContainer="WutNuContext">
+          <EntitySetMapping Name="ErrorLogs">
+            <EntityTypeMapping TypeName="wutnu3Model.ErrorLog">
+              <MappingFragment StoreEntitySet="ErrorLogs">
+                <ScalarProperty Name="ErrorId" ColumnName="ErrorId" />
+                <ScalarProperty Name="ErrorDate" ColumnName="ErrorDate" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="CallStack" ColumnName="CallStack" />
+                <ScalarProperty Name="UserAgent" ColumnName="UserAgent" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="UserComment" ColumnName="UserComment" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ValidationErrors" ColumnName="ValidationErrors" />
+                <ScalarProperty Name="ErrorSource" ColumnName="ErrorSource" />
+                <ScalarProperty Name="StackTrace" ColumnName="StackTrace" />
+                <ScalarProperty Name="InnerExceptionSource" ColumnName="InnerExceptionSource" />
+                <ScalarProperty Name="QSData" ColumnName="QSData" />
+                <ScalarProperty Name="PostData" ColumnName="PostData" />
+                <ScalarProperty Name="Referrer" ColumnName="Referrer" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="InnerExceptionMessage" ColumnName="InnerExceptionMessage" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="usp_AddHistory" FunctionName="wutnu3Model.Store.usp_AddHistory" />
+          <EntitySetMapping Name="Reports">
+            <EntityTypeMapping TypeName="wutnu3Model.Report">
+              <MappingFragment StoreEntitySet="Report">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ReportPath" ColumnName="ReportPath" />
+                <ScalarProperty Name="ReportName" ColumnName="ReportName" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UrlHistories">
+            <EntityTypeMapping TypeName="wutnu3Model.UrlHistory">
+              <MappingFragment StoreEntitySet="UrlHistory">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="HostIp" ColumnName="HostIp" />
+                <ScalarProperty Name="CallDate" ColumnName="CallDate" />
+                <ScalarProperty Name="WutLinkId" ColumnName="WutLinkId" />
+                <ScalarProperty Name="HistoryId" ColumnName="HistoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="wutnu3Model.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ApiKey" ColumnName="ApiKey" />
+                <ScalarProperty Name="ExtClaims" ColumnName="ExtClaims" />
+                <ScalarProperty Name="PrimaryEmail" ColumnName="PrimaryEmail" />
+                <ScalarProperty Name="UserOID" ColumnName="UserOID" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserAssignments">
+            <EntityTypeMapping TypeName="wutnu3Model.UserAssignment">
+              <MappingFragment StoreEntitySet="UserAssignment">
+                <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="WutLinkId" ColumnName="WutLinkId" />
+                <ScalarProperty Name="UserAssignmentId" ColumnName="UserAssignmentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WutLinks">
+            <EntityTypeMapping TypeName="wutnu3Model.WutLink">
+              <MappingFragment StoreEntitySet="WutLink">
+                <ScalarProperty Name="IsAzureBlob" ColumnName="IsAzureBlob" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="RealUrl" ColumnName="RealUrl" />
+                <ScalarProperty Name="IsProtected" ColumnName="IsProtected" />
+                <ScalarProperty Name="CreatedByIp" ColumnName="CreatedByIp" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ShortUrl" ColumnName="ShortUrl" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="WutLinkId" ColumnName="WutLinkId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

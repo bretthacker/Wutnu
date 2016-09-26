@@ -1,0 +1,177 @@
+﻿{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "WutNuHostingName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "WutNuHostingSKU": {
+      "type": "string",
+      "allowedValues": [
+        "Free",
+        "Shared",
+        "Basic",
+        "Standard"
+      ],
+      "defaultValue": "Free"
+    },
+    "WutNuHostingWorkerSize": {
+      "type": "string",
+      "allowedValues": [
+        "0",
+        "1",
+        "2"
+      ],
+      "defaultValue": "0"
+    },
+    "DeploymentEnvironment": {
+      "type": "string",
+      "allowedValues": [
+        "Dev",
+        "Int",
+        "QA",
+        "UAT",
+        "Prod"
+      ],
+      "defaultValue": "Int"
+    },
+    "StorageConnectionString": {
+      "type": "string"
+    },
+    "RedisConnectionString": {
+      "type": "string"
+    },
+    "RedisUrlDBNum": {
+      "type": "string"
+    },
+    "RedisUserDBNum": {
+      "type": "string"
+    },
+    "AADGraphKey": {
+      "type": "string"
+    },
+    "TenantB2B": {
+      "type": "string"
+    },
+    "ClientIdB2B": {
+      "type": "string"
+    },
+    "TenantB2C": {
+      "type": "string"
+    },
+    "ClientIdB2C": {
+      "type": "string"
+    },
+    "ida:SignUpPolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_DefaultSignup"
+    },
+    "ida:SignInPolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_DefaultSignin"
+    },
+    "ida:UserProfilePolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_DefaultProfileEditPolicy"
+    },
+    "repoURL": {
+      "type": "string",
+      "defaultValue": "https://csabrett.visualstudio.com/DefaultCollection/_git/Wutnu3"
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "master"
+    }
+  },
+    "variables": {
+        "WutNuName": "[concat('WutNu', uniqueString(resourceGroup().id))]"
+        
+    },
+    "resources": [
+        {
+            "name": "[parameters('WutNuHostingName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2014-06-01",
+            "dependsOn": [ ],
+            "tags": {
+                "displayName": "WutNuHosting"
+            },
+            "properties": {
+                "name": "[parameters('WutNuHostingName')]",
+                "sku": "[parameters('WutNuHostingSKU')]",
+                "workerSize": "[parameters('WutNuHostingWorkerSize')]",
+                "numberOfWorkers": 1
+            }
+        },
+        {
+            "name": "[variables('WutNuName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2015-08-01",
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', parameters('WutNuHostingName'))]"
+            ],
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('WutNuHostingName'))]": "Resource",
+                "displayName": "WutNu"
+            },
+            "properties": {
+                "name": "[variables('WutNuName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('WutNuHostingName'))]"
+            },
+          "resources": [
+            {
+              "apiVersion": "2015-08-01",
+              "name": "web",
+              "type": "sourcecontrols",
+              "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites', variables('WutNuName'))]"
+              ],
+              "properties": {
+                "RepoUrl": "[parameters('repoURL')]",
+                "branch": "[parameters('branch')]",
+                "IsManualIntegration": true
+              }
+            },
+            {
+              "name": "appsettings",
+              "type": "config",
+              "apiVersion": "2015-08-01",
+              "dependsOn": [
+                "[concat('Microsoft.Web/sites/', variables('WutNuName'))]"
+              ],
+              "tags": {
+                "displayName": "WebSettings"
+              },
+              "properties": {
+                "DomainName": "localhost:44316",
+                "RedisConnection": "[parameters('RedisConnectionString')]",
+                "RedisUrlDBNum": "[parameters('RedisUrlDBNum')]",
+                "RedisUserDBNum": "[parameters('RedisUserDBNum')]",
+                "StorageConnectionString": "[parameters('StorageConnectionString')]",
+                "GraphKey": "[parameters('AADGraphKey')]",
+                "ActivateWebApiTracing": "false",
+                "ida:AadInstance": "https://login.microsoftonline.com/{0}",
+                "ida:RedirectUri": "https://localhost:44316",
+                "ida:TenantB2B": "[parameters('TenantB2B')]",
+                "ida:ClientIdB2B": "[parameters('ClientIdB2B')]",
+                "ida:TenantB2C": "[parameters('TenantB2C')]",
+                "ida:ClientIdB2C": "[parameters('ClientIdB2C')]",
+                "ida:SignUpPolicyId": "B2C_1_DefaultSignup",
+                "ida:SignInPolicyId": "B2C_1_DefaultSignin",
+                "ida:UserProfilePolicyId": "B2C_1_DefaultProfileEditPolicy",
+                "ConfigStorageCors": "true",
+                "Environment": "[parameters('DeploymentEnvironment')]",
+                "LocalReports": "false",
+                "EnableDashboardLogging": "true"
+              }
+            }
+          ]
+        }
+        
+    ],
+    "outputs": {
+    }
+}

@@ -1,0 +1,20 @@
+﻿@{
+    var rootUrl = ViewData["rootUrl"];
+}
+
+<style type="text/css">
+    #ReportList div {
+        padding:3px;
+        cursor: pointer;
+    }
+
+    #ReportViewer {
+        border: 1px solid #808080;
+        position: relative;
+    }
+</style>
+
+<div class="panel panel-primary" style="margin-top:10px;position:relative;">
+    <div id="ReportList" class="col-sm-3" style="height:400px;overflow:auto;"></div>
+    <div id="ReportViewer" class="col-sm-9" style="height:600px;overflow:auto;"></div>
+</div>
