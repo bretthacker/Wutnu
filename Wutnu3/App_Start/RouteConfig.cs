@@ -17,17 +17,17 @@ namespace Wutnu
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Healthcheck",
+                url: "healthcheck",
+                defaults: new { controller = "Healthcheck", action = "Index" }
+                );
+
+            routes.MapRoute(
                 name: "Redir",
                 url: "{id}",
                 defaults: new { controller = "Home", action = "Redir" } //,
                 //constraints: new ShortUrlConstraint(8, "")
             );
-
-            routes.MapRoute(
-                name: "Healthcheck",
-                url: "healthcheck",
-                defaults: new { controller = "Healthcheck", action = "Index" }
-                );
 
             routes.MapRoute(
                 name: "RedirAuth",

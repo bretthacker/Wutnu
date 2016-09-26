@@ -55,6 +55,11 @@ namespace Wutnu.Controllers
                 return Redirect("/a/" + id);
             }
 
+            if (res.IsAzureBlob)
+            {
+                res = GenToken(res);
+            }
+
             return LogAndRedir(res);
         }
 
@@ -96,15 +101,21 @@ namespace Wutnu.Controllers
 
             if (res.IsAzureBlob)
             {
-                var uri = new Uri(res.RealUrl);
-                var containerName = uri.Segments[1];
-                containerName = containerName.Substring(0, containerName.Length - 1);
-
-                var container = WutStorage.GetContainer(containerName);
-                res.RealUrl = WutStorage.GetBlobReadTokenUri(container, System.IO.Path.GetFileName(res.RealUrl));
+                res = GenToken(res);
             }
 
             return LogAndRedir(res, userId);
+        }
+
+        private WutLinkPoco GenToken(WutLinkPoco res)
+        {
+            var uri = new Uri(res.RealUrl);
+            var containerName = uri.Segments[1];
+            containerName = containerName.Substring(0, containerName.Length - 1);
+
+            var container = WutStorage.GetContainer(containerName);
+            res.RealUrl = WutStorage.GetBlobReadTokenUri(container, System.IO.Path.GetFileName(res.RealUrl));
+            return res;
         }
 
         private ActionResult LogAndRedir(WutLinkPoco res, int? userId=null)
