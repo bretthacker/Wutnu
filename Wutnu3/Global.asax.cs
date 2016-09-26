@@ -74,9 +74,10 @@ namespace Wutnu
                 Cache.RedisUrlDBNum = Convert.ToInt32(ConfigurationManager.AppSettings["RedisUrlDBNum"]);
                 Cache.RedisUserDBNum = Convert.ToInt32(ConfigurationManager.AppSettings["RedisUserDBNum"]);
 
-                AADGraph.GraphToken = ConfigurationManager.AppSettings["GraphKey"];
+                AADGraph.GraphToken = ConfigurationManager.AppSettings["B2BGraphKey"];
                 AADGraph.ClientId = ConfigurationManager.AppSettings["ida:ClientIdB2B"];
-
+                AADGraph.TenantName = ConfigurationManager.AppSettings["ida:TenantB2B"];
+                AADGraph.TenantId = ConfigurationManager.AppSettings["ida:TenantIdB2B"];
                 AADGraph.LoadGroups();
 
                 //VPP

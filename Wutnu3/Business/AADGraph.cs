@@ -14,14 +14,18 @@ namespace Wutnu.Business
     {
         public static string GraphToken { get; set; }
         public static string ClientId { get; set; }
+        public static string TenantId { get; set; }
+        public static string TenantName { get; set; }
+
         public static List<Group> GroupList { get; set; }
 
-        //const string authString = "https://login.windows.net/hackerdemo.com";
-        const string authString = "https://login.microsoftonline.com/a70fadca-e867-489c-b119-72dc9f00c26b/oauth2/authorize";
+        private static string authString;
         const string resAzureGraphAPI = "https://graph.windows.net";
 
         public async static void LoadGroups()
         {
+            authString = string.Format("https://login.microsoftonline.com/{0}/oauth2/authorize", TenantId);
+
             GroupList = new List<Group>();
 
             ActiveDirectoryClient client = GetClient();
@@ -49,14 +53,14 @@ namespace Wutnu.Business
             catch (Exception ex)
             {
                 throw;
-                return user;
             }
         }
+
         private static ActiveDirectoryClient GetClient()
         {
             Uri servicePointUri = new Uri("https://graph.windows.net");
 
-            Uri serviceRoot = new Uri(servicePointUri, "hackerdemo.com");
+            Uri serviceRoot = new Uri(servicePointUri, TenantId);
 
             ActiveDirectoryClient activeDirectoryClient = new ActiveDirectoryClient(serviceRoot, async () => await GetAppTokenAsync());
 

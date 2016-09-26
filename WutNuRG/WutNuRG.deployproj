@@ -26,7 +26,6 @@
   <!-- vertag<:>end -->
   <ItemGroup>
     <Folder Include="Scripts\" />
-    <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Deployment.targets">
@@ -34,7 +33,6 @@
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <Content Include="Templates\azuredeploy.json" />
-    <Content Include="Templates\azuredeploy.parameters.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wutnu3\Wutnu.Web.csproj">

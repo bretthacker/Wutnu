@@ -48,7 +48,7 @@
     "RedisUserDBNum": {
       "type": "string"
     },
-    "AADGraphKey": {
+    "B2BGraphKey": {
       "type": "string"
     },
     "TenantB2B": {
@@ -151,7 +151,7 @@
                 "RedisUrlDBNum": "[parameters('RedisUrlDBNum')]",
                 "RedisUserDBNum": "[parameters('RedisUserDBNum')]",
                 "StorageConnectionString": "[parameters('StorageConnectionString')]",
-                "GraphKey": "[parameters('AADGraphKey')]",
+                "B2BGraphKey": "[parameters('B2BGraphKey')]",
                 "ActivateWebApiTracing": "false",
                 "ida:AadInstance": "https://login.microsoftonline.com/{0}",
                 "ida:RedirectUri": "https://localhost:44316",
