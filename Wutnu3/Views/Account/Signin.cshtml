@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Signin";
+}
+
+<h2>Signin</h2>
+
+<div>
+    <p>
+        You can access Wut.nu two ways:
+        <ul>
+            <li>With a local or social account</li>
+            <li>With an Azure Active Directory Work account</li>
+        </ul>
+        If you want to see if you have access via a Work account, click "Sign In with a Work Account" below. If you've already established a separate, new account here, click "Sign In" below.
+    </p>
+    <center>
+        <input type="button" style="margin:10px;width:150px" class="btn btn-primary" onclick="window.location.href='/Account/SignInB2C?redir=@ViewBag.Redir'" value="Sign In" />
+        <input type="button" style="margin:10px;width:250px" class="btn btn-primary" onclick="window.location.href = '/Account/SignInWork?redir=@ViewBag.Redir'" value="Sign In with a Work Account" />
+    </center>
+
+</div>

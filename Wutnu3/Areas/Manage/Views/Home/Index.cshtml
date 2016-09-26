@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Index";
+    var rootUrl = System.Configuration.ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";
+    ViewData.Add("rootUrl", rootUrl);
+}
+<h2>Manage Wut?</h2>
+<div class="col-xs-2">
+    <ul class="nav nav-pills nav-stacked" role="tablist">
+        <li role="presentation" class="active"><a href="#list" aria-controls="list" role="tab" data-toggle="pill">List</a></li>
+        <li role="presentation"><a href="#files" aria-controls="files" role="tab" data-toggle="pill">Files</a></li>
+        <li role="presentation"><a href="#users" aria-controls="users" role="tab" data-toggle="pill">Users</a></li>
+        <li role="presentation"><a href="#reports" aria-controls="reports" role="tab" data-toggle="pill">Reports</a></li>
+    </ul>
+</div>
+<div class="col-xs-10">
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="list">
+            @Html.Partial("_Urls", ViewData)
+        </div>
+        <div role="tabpanel" class="tab-pane" id="files">
+            <h3>Manage Files</h3>
+            @Html.Partial("_Files")
+        </div>
+        <div role="tabpanel" class="tab-pane" id="users">
+            <h3>Assigned Users</h3>
+            @Html.Partial("_Users")
+        </div>
+        <div role="tabpanel" class="tab-pane" id="reports">
+            <h3>Reports</h3>
+            @Html.Partial("_Reports")
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/manageportal")
+}
+
+@section styles{
+    @Styles.Render("~/Content/datatablescss")
+    <link rel="stylesheet" type="text/css" href="/content/Manage.css" />
+}

@@ -1,0 +1,142 @@
+﻿@using System.Data
+@using System.Data.SqlClient
+@using System.Text
+@using System.Web
+@using Wutnu.Data
+@using Wutnu.Common
+@using Wutnu.Common.ErrorMgr
+@using Wutnu.Infrastructure
+
+@inherits WebViewPage
+
+@*
+    NOTE: to debug this page after loading via a virtual path, you will have to include a razor engine override
+        http://stackoverflow.com/questions/10633329/cannot-debug-embeddedresource-views-loaded-via-custom-virtualpathprovider
+    This is implemented here in Wutnu.Web.Infrastructure.MyCustomRazorHostFactory
+*@
+
+@{
+    Layout = "";
+    //if (!HttpContext.Current.User.IsInRole("TrafficReport"))
+    //{
+    //    HttpContext.Current.Response.Write("Sorry, you are not authorized to execute this report. Please contact your department administrator.");
+    //    HttpContext.Current.Response.End();
+    //}
+    var uid = User.Identity.GetClaim(CustomClaimTypes.UserId);
+    if (Context.Request.QueryString["Download"] == "Download")
+    {
+        ProcessRequest();
+    }
+
+    var sFrom = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy-MM-dd");
+    var sTo = DateTime.Now.ToString("yyyy-MM-dd");
+}
+
+@functions {
+    protected void ProcessRequest()
+    {
+        var reports = new ReportManager(new HttpContextWrapper(HttpContext.Current));
+        var userId = User.Identity.GetClaim(CustomClaimTypes.UserId);
+        reports.ReportPath = "/Blob/Report/TrafficReport.rdlc";
+
+        var parms = new Dictionary<string, string>
+            {
+                {"DateFrom", Request.QueryString["df"]},
+                {"DateTo", Request.QueryString["dt"]}
+            };
+
+        reports.ReportType = Request.QueryString["rt"];
+
+        reports.FileName = "TrafficReport" + reports.GetReportExtension();
+
+        var reportDef = new BlobVirtualFile(reports.ReportPath).Open();
+
+        //not crazy about this
+        var cmd = GetHistoryData(userId);
+
+        reports.WriteOut(reports.GetReport(
+            reportDef,
+            "TrafficReport",
+            cmd.ExecuteReader(),
+            parms
+            ));
+
+        cmd.Connection.Close();
+        cmd.Connection.Dispose();
+        cmd.Dispose();
+        Context.Response.End();
+    }
+
+    protected SqlCommand GetHistoryData(string userId)
+    {
+        var connStr = new WutNuContext().Database.Connection.ConnectionString;
+        SqlConnection conn = new SqlConnection(connStr);
+        conn.Open();
+        var cmd = new SqlCommand
+        {
+            Connection = conn,
+            CommandText = GetSql(),
+            CommandType = CommandType.Text
+        };
+
+        cmd.Parameters.Add(new SqlParameter("@UserId", userId));
+        return cmd;
+    }
+
+    protected string GetSql()
+    {
+        var s = new StringBuilder();
+        s.Append("SELECT ");
+        s.Append("	h.HistoryId, ");
+        s.Append("	h.CallDate, ");
+        s.Append("	h.HostIp, ");
+        s.Append("	w.RealUrl, ");
+        s.Append("	h.WutLinkId, ");
+        s.Append("	w.ShortUrl, ");
+        s.Append("	u.PrimaryEmail AS UserName ");
+        s.Append("FROM ");
+        s.Append("	dbo.UrlHistory h INNER JOIN dbo.WutLink w ON (h.WutLinkId=w.WutLinkId) ");
+        s.Append("	LEFT JOIN dbo.[User] u ON (h.UserId=u.UserId) ");
+        s.Append("WHERE ");
+        s.Append("	w.UserId = @UserId ");
+        return s.ToString();
+    }
+    }
+
+<form method="Get" action="/Manage/Reports/Run/TrafficReport.cshtml">
+<h3>Traffic Report</h3>
+<div id="divParms">
+    <div class="row">
+        <div class="col-xs-3">
+            <label for="rptDateFromFilter">From</label>
+        </div>
+        <div class="col-xs-5">
+            <input class="form-control" type="date" id="rptDateFromFilter" name="df" value="@sFrom" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">
+            <label for="ftpDateToFilter">To</label>
+        </div>
+        <div class="col-xs-5">
+            <input class="form-control" type="date" id="rptDateToFilter" name="dt" value="@sTo" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">
+            <label for="fptReportType">Report Type</label>
+        </div>
+        <div class="col-xs-5">
+            <select class="form-control" id="rptReportType" name="rt">
+                <option value="PDF">PDF</option>
+                <option value="Excel">Excel</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-8">
+            <input class="btn btn-primary" type="submit" name="Download" value="Download" />
+        </div>
+    </div>
+</div>
+</form>

@@ -1,0 +1,78 @@
+﻿#divLookups {
+    height: 530px;
+    width: 1100px;
+}
+
+span {
+    color: #404040 !important;
+}
+
+    span.label {
+        display: inline-block;
+        width: 130px;
+        font-weight: bold;
+        float: left;
+        font: 10pt Segoe UI;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    span.data {
+        display: inline-block;
+        float: left;
+        width: auto;
+        font-family: Consolas, courier new;
+        font-size: 10pt;
+    }
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.table tbody tr {
+    cursor: pointer;
+}
+
+.table td {
+    color: black;
+}
+
+.formtitle {
+    padding: 3px;
+    font-weight: bold;
+}
+
+input {
+    padding: 4px;
+    margin: 2px;
+}
+
+label {
+    cursor: pointer;
+}
+
+td {
+    font: 9pt Segoe UI, arial, sans-serif;
+}
+@media all and (max-width:992px) {
+    .table {
+        zoom: 80%;
+    }
+}
+td { word-wrap:break-word;}
+th { word-wrap:break-word;}
+
+.secure {
+    background-image:url(/content/images/LockUnlock.jpg);
+    background-repeat:no-repeat;
+    width:18px;
+    height:24px;
+    display:inline-block;
+}
+.secure.locked {
+    background-position:right;
+}
+.secure.unlocked {
+    background-position:left;
+}
