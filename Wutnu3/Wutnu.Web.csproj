@@ -185,7 +185,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.20622.1351, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.206221351\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
       <Private>True</Private>
@@ -226,11 +228,19 @@
       <HintPath>..\packages\System.Spatial.5.7.0\lib\net40\System.Spatial.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Extensions">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -271,8 +281,12 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -283,6 +297,7 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -331,6 +346,7 @@
     <Compile Include="Controllers\HealthcheckController.cs" />
     <Compile Include="Infrastructure\AuthTypes.cs" />
     <Compile Include="Infrastructure\BaseController.cs" />
+    <Compile Include="Infrastructure\BlobCopyZip.cs" />
     <Compile Include="Infrastructure\CustomRazorHostFactory.cs" />
     <Compile Include="Infrastructure\Filters\ApiAuthAttribute.cs" />
     <Compile Include="Infrastructure\ReportManager.cs" />
@@ -411,6 +427,15 @@
     <Content Include="Content\wut_1024.png" />
     <Content Include="Content\wut_sm.png" />
     <Content Include="favicon.ico" />
+    <Content Include="Files\BlobCopy\api.config.txt" />
+    <Content Include="Files\BlobCopy\BlobCopy.exe" />
+    <Content Include="Files\BlobCopy\BlobCopy.exe.config.txt" />
+    <Content Include="Files\BlobCopy\Microsoft.WindowsAzure.Storage.DataMovement.dll" />
+    <Content Include="Files\BlobCopy\Microsoft.WindowsAzure.Storage.dll" />
+    <Content Include="Files\BlobCopy\Newtonsoft.Json.dll" />
+    <Content Include="Files\BlobCopy\Readme.txt" />
+    <Content Include="Files\BlobCopy\Wutnu.Common.dll" />
+    <Content Include="Files\BlobCopy\Wutnu.Data.dll" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -446,6 +471,8 @@
     </Content>
     <Content Include="reportslocal\TrafficReport.cshtml" />
     <None Include="Properties\PublishProfiles\WutnuWeb - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\WutnuWeb-int - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\WutnuWeb-qa - Web Deploy.pubxml" />
     <None Include="reportslocal\WutModels.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WutModels.Designer.cs</LastGenOutput>
@@ -541,7 +568,9 @@
     <Content Include="Scripts\lib\azure.jquery.fine-uploader\LICENSE" />
     <Content Include="Scripts\jquery-2.2.4.min.map" />
     <Content Include="Views\Healthcheck\Index.cshtml" />
-    <Content Include="settings.config" />
+    <Content Include="settings.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

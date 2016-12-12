@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Wutnu.Common;
 using Wutnu.Data;
 using Wutnu.Infrastructure;
+using Wutnu.Web.Infrastructure;
 
 namespace Wutnu.Areas.Manage.Controllers
 {

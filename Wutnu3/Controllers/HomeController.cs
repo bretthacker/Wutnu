@@ -28,6 +28,24 @@ namespace Wutnu.Controllers
             {
                 ViewBag.Error = Request.Cookies["Error"].Value;
             }
+            return CheckForReturn();
+        }
+
+        private ActionResult CheckForReturn()
+        {
+            if (Request.UrlReferrer == null)
+                return View();
+
+            var profile = HttpUtility.ParseQueryString(Request.UrlReferrer.Query)["p"];
+            if (profile != null)
+            {
+                profile = profile.ToLower();
+
+                if (profile==Startup.ResetPolicyId.ToLower() || profile == Startup.ProfilePolicyId.ToLower())
+                {
+                    return RedirectToAction("Index", "Profile", new { area = "Manage" });
+                }
+            }
             return View();
         }
 

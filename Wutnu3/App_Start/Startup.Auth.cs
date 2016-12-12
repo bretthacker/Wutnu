@@ -31,13 +31,15 @@ namespace Wutnu
         private static string clientId = ConfigurationManager.AppSettings["ida:ClientIdB2C"];
         private static string aadInstance = ConfigurationManager.AppSettings["ida:AadInstance"];
         private static string tenant = ConfigurationManager.AppSettings["ida:TenantB2C"];
-        private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";
+        //private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";
+        public static string RedirectUri { get; set; }
 
         // B2C policy identifiers
         public static string SignUpPolicyId = ConfigurationManager.AppSettings["ida:SignUpPolicyId"];
         public static string SignInPolicyId = ConfigurationManager.AppSettings["ida:SignInPolicyId"];
         //public static string ResetPolicyId = ConfigurationManager.AppSettings["ida:PasswordResetPolicyId"];
         public static string ProfilePolicyId = ConfigurationManager.AppSettings["ida:UserProfilePolicyId"];
+        public static string ResetPolicyId = ConfigurationManager.AppSettings["ida:ResetPolicyId"];
 
         public void ConfigureAuth(IAppBuilder app)
         {
@@ -63,12 +65,20 @@ namespace Wutnu
                 // Standard OWIN OIDC parameters
                 Authority = string.Format(aadInstance, tenant),
                 ClientId = clientId,
-                RedirectUri = redirectUri,
-                PostLogoutRedirectUri = redirectUri,
+                RedirectUri = RedirectUri,
+                PostLogoutRedirectUri = RedirectUri,
                 ProtocolValidator = new OpenIdConnectProtocolValidator { RequireNonce=false },
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 { 
-                    AuthenticationFailed = AuthenticationFailed
+                    AuthenticationFailed = AuthenticationFailed,
+                    RedirectToIdentityProvider = (context) =>
+                    {
+                        string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
+                        context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
+                        context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
+
+                        return Task.FromResult(0);
+                    },
                 },
 
                 Scope = "openid",
@@ -90,11 +100,20 @@ namespace Wutnu
             {
                 Authority = string.Format(aadInstance, tenantB2B),
                 ClientId = clientIdB2B,
-                RedirectUri = redirectUri,
-                PostLogoutRedirectUri = redirectUri,
+                //RedirectUri = RedirectUri,
+                //PostLogoutRedirectUri = RedirectUri,
+                //ProtocolValidator = new OpenIdConnectProtocolValidator { RequireNonce = false },
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
                     AuthenticationFailed = AuthenticationFailed,
+                    RedirectToIdentityProvider = (context) =>
+                    {
+                        string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
+                        context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
+                        context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
+
+                        return Task.FromResult(0);
+                    },
                 },
 
                 TokenValidationParameters = new TokenValidationParameters

@@ -22,6 +22,7 @@ namespace Wutnu.Areas.Manage.Controllers
         public ActionResult Index()
         {
             UserPoco res = UserPoco.UserToUserPoco(Wutcontext.Users.Single(u => u.UserId == UserId));
+            
             return View(res);
         }
     }

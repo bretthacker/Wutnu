@@ -54,7 +54,8 @@ namespace Wutnu.Data
                     var usr = wutContext.Users.SingleOrDefault(u => u.ApiKey == apiKey);
                     res = UserPoco.UserToUserPoco(usr);
                     //update local and remote cache
-                    SetUser(res);
+                    if (res!=null)
+                        SetUser(res);
                 }
             }
             else

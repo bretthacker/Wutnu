@@ -1,0 +1,4 @@
+﻿<appSettings>
+  <add key="ApiUrl" value="https://localhost:44316/api/CopyUtil/"></add>
+  <add key="ApiKey" value="dj83o2ejk;lsafudkelsahfuie489234328"></add>
+</appSettings>

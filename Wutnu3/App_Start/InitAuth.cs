@@ -34,17 +34,31 @@ namespace Wutnu.App_Start
         {
             try
             {
-                var claimEmail = ident.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email);
-                var claimName = ident.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name);
-                var loginString = (claimEmail != null) ? claimEmail.Value : (claimName != null) ? claimName.Value : null;
+                //this claim seems to be returned for local logins
+                var authClassRef = ident.Claims.SingleOrDefault(c => c.Type == "http://schemas.microsoft.com/claims/authnclassreference");
+                //ClaimsPrincipal.Current.FindFirst(Startup.AcrClaimType)
 
-                //var user = UserBL.GetActiveUserByEmailOrName(efctx, loginString);
-                //if (user == null)
-                //{
-                //    //user not found
-                //    ident.AddClaim(new Claim(ClaimTypesLW.LWUnauthorized, "true"));
-                //    return ident;
-                //}
+                //this claim was returned after a password reset of a local login
+                var tfp = ident.Claims.SingleOrDefault(c => c.Type == "tfp");
+
+                Claim claimEmail;
+                Claim claimName;
+                string loginString;
+
+                var identProvider = ident.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.IdentityProvider);
+                if (identProvider == null)
+                {
+                    //local sign-in - TODO: validate that the claim type is unique for local logins... :/
+                    claimEmail = ident.Claims.FirstOrDefault(c => c.Type == "emails");
+                    loginString = claimEmail.Value;
+                    ident.AddClaim(new Claim(CustomClaimTypes.IdentityProvider, "local"));
+                }
+                else
+                {
+                    claimEmail = ident.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email);
+                    claimName = ident.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Name);
+                    loginString = (claimEmail != null) ? claimEmail.Value : (claimName != null) ? claimName.Value : null;
+                }
 
                 var user = GetUser(ident, loginString, wutContext);
                 ident = TransformClaims(ident, user);
@@ -100,11 +114,11 @@ namespace Wutnu.App_Start
             if (issuer.IndexOf("login.microsoftonline.com")>-1)
             {
                 //B2C
-                var name = ident.Claims.Single(c => c.Type == ClaimTypes.GivenName).Value;
-                name += " " + ident.Claims.Single(c => c.Type == ClaimTypes.Surname).Value;
-                name += " (" + ident.Claims.Single(c => c.Type == CustomClaimTypes.IdentityProvider).Value + ")";
+                var name = ident.Claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName).Value;
+                name += " " + ident.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname).Value;
+                name += " (" + ident.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.IdentityProvider).Value + ")";
 
-                var email = ident.Claims.Single(c => c.Type == "emails").Value;
+                var email = ident.Claims.FirstOrDefault(c => c.Type == "emails").Value;
                 ident.AddClaim(new Claim(CustomClaimTypes.AuthType, WutAuthTypes.B2C));
                 ident.AddClaim(new Claim(ClaimTypes.Email, email));
 
@@ -127,7 +141,7 @@ namespace Wutnu.App_Start
                     ident.AddClaim(new Claim(ClaimTypes.Role, group.DisplayName));
                 }
 
-                var fullName = ident.Claims.Single(c => c.Type == "name").Value;
+                var fullName = ident.Claims.FirstOrDefault(c => c.Type == "name").Value;
                 ident.AddClaim(new Claim(CustomClaimTypes.FullName, fullName));
 
                 //ident.SetClaim(ClaimTypes.Name, user.UserName);

@@ -14,7 +14,6 @@ namespace Wutnu.Business
     {
         public static string GraphToken { get; set; }
         public static string ClientId { get; set; }
-        public static string TenantId { get; set; }
         public static string TenantName { get; set; }
 
         public static List<Group> GroupList { get; set; }
@@ -24,7 +23,7 @@ namespace Wutnu.Business
 
         public async static void LoadGroups()
         {
-            authString = string.Format("https://login.microsoftonline.com/{0}/oauth2/authorize", TenantId);
+            authString = string.Format("https://login.microsoftonline.com/{0}/oauth2/authorize", TenantName);
 
             GroupList = new List<Group>();
 
@@ -60,7 +59,7 @@ namespace Wutnu.Business
         {
             Uri servicePointUri = new Uri("https://graph.windows.net");
 
-            Uri serviceRoot = new Uri(servicePointUri, TenantId);
+            Uri serviceRoot = new Uri(servicePointUri, TenantName);
 
             ActiveDirectoryClient activeDirectoryClient = new ActiveDirectoryClient(serviceRoot, async () => await GetAppTokenAsync());
 

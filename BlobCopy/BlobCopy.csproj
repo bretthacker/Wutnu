@@ -83,6 +83,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Spatial, Version=5.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.7.0\lib\net40\System.Spatial.dll</HintPath>
@@ -100,21 +101,15 @@
     <Compile Include="BlobUtil.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="api.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wutnu.Common\Wutnu.Common.csproj">
@@ -135,6 +130,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)Wutnu3\files\blobcopy\
+copy $(TargetDir)BlobCopy.exe.config $(SolutionDir)Wutnu3\files\blobcopy\BlobCopy.exe.config.txt
+copy $(TargetDir)api.config $(SolutionDir)Wutnu3\files\blobcopy\api.config.txt
+
+copy $(TargetDir)Wutnu.Common.dll $(SolutionDir)Wutnu3\files\blobcopy\
+copy $(TargetDir)Wutnu.Data.dll $(SolutionDir)Wutnu3\files\blobcopy\
+copy $(TargetDir)Microsoft.WindowsAzure.Storage.dll $(SolutionDir)Wutnu3\files\blobcopy\
+copy $(TargetDir)Microsoft.WindowsAzure.Storage.DataMovement.dll $(SolutionDir)Wutnu3\files\blobcopy\
+copy $(TargetDir)Newtonsoft.Json.dll $(SolutionDir)Wutnu3\files\blobcopy\
+
+
+</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

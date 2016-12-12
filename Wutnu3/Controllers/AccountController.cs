@@ -29,23 +29,6 @@ namespace Wutnu.Controllers
             return View();
         }
 
-        public void SignInB2C()
-        {
-            if (!Request.IsAuthenticated)
-            {
-                HttpContext.GetOwinContext().Authentication.Challenge(
-                    new AuthenticationProperties(
-                        new Dictionary<string, string> 
-                        { 
-                            {B2COpenIdConnectAuthenticationHandler.PolicyParameter, Startup.SignInPolicyId} 
-                        })
-                    {
-                        RedirectUri = (Request["redir"] == null) ? "/" : Request["redir"],
-                    },
-                    WutAuthTypes.B2C);
-            }
-        }
-
         public void SignInWork()
         {
             if (!Request.IsAuthenticated)
@@ -53,64 +36,48 @@ namespace Wutnu.Controllers
                 HttpContext.GetOwinContext().Authentication.Challenge(
                     new AuthenticationProperties
                     {
-                        RedirectUri = (Request["redir"] == "") ? "/" : Request["redir"],
+                        RedirectUri = "/",
                     },
                     WutAuthTypes.B2B);
             }
         }
 
+        public void SignInB2C()
+        {
+            B2CAuth(Startup.SignInPolicyId, false);
+       }
+
         public void SignUpB2C()
         {
-            if (!Request.IsAuthenticated)
-            {
-                HttpContext.GetOwinContext().Authentication.Challenge(
-                    new AuthenticationProperties(
-                        new Dictionary<string, string> 
-                        { 
-                            {B2COpenIdConnectAuthenticationHandler.PolicyParameter, Startup.SignUpPolicyId} 
-                        })
-                    {
-                        RedirectUri = (Request["redir"] == null) ? "/" : Request["redir"],
-                    },
-                    WutAuthTypes.B2C);
-            }
+            B2CAuth(Startup.SignUpPolicyId, false);
         }
-
 
         public new void Profile()
         {
-            if (Request.IsAuthenticated)
-            {
-                HttpContext.GetOwinContext().Authentication.Challenge(
-                    new AuthenticationProperties(
-                        new Dictionary<string, string>
-                        {
-                            {B2COpenIdConnectAuthenticationHandler.PolicyParameter, Startup.ProfilePolicyId}
-                        })
-                    {
-                        RedirectUri = (Request["redir"] == null) ? "/" : Request["redir"],
-                    },
-                    WutAuthTypes.B2C);
-            }
+            B2CAuth(Startup.ProfilePolicyId, true);
         }
 
-        // Password Reset in Progress
-        //public void PasswordReset()
-        //{
-        //    if (Request.IsAuthenticated)
-        //    {
-        //        HttpContext.GetOwinContext().Authentication.Challenge(
-        //            new AuthenticationProperties(
-        //                new Dictionary<string, string> 
-        //                { 
-        //                    {B2COpenIdConnectAuthenticationHandler.PolicyParameter, Startup.ResetPolicyId} 
-        //                })
-        //            {
-        //                RedirectUri = "/",
-        //            },
-        //            OpenIdConnectAuthenticationDefaults.AuthenticationType);
-        //    }
-        //}
+        public void PasswordReset()
+        {
+            B2CAuth(Startup.ResetPolicyId, true);
+        }
+
+        private void B2CAuth(string policyId, bool reqAuth)
+        {
+            if ((reqAuth && Request.IsAuthenticated) || (!reqAuth && !Request.IsAuthenticated))
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(
+                new AuthenticationProperties(
+                    new Dictionary<string, string>
+                    {
+                        {B2COpenIdConnectAuthenticationHandler.PolicyParameter, policyId}
+                    })
+                {
+                    RedirectUri = "/",
+                },
+                WutAuthTypes.B2C);
+            }
+        }
 
         public void SignOut()
         {
@@ -120,16 +87,16 @@ namespace Wutnu.Controllers
                 dict[B2COpenIdConnectAuthenticationHandler.PolicyParameter] = ClaimsPrincipal.Current.FindFirst(Startup.AcrClaimType).Value;
                 HttpContext.GetOwinContext().Authentication.SignOut(
                     new AuthenticationProperties(dict),
-                    WutAuthTypes.B2C, CookieAuthenticationDefaults.AuthenticationType);
+                    WutAuthTypes.B2C, 
+                    CookieAuthenticationDefaults.AuthenticationType);
             }
             else
             {
                 HttpContext.GetOwinContext().Authentication.SignOut(
                     new AuthenticationProperties(dict),
-                    WutAuthTypes.B2B, CookieAuthenticationDefaults.AuthenticationType);
+                    WutAuthTypes.B2B, 
+                    CookieAuthenticationDefaults.AuthenticationType);
             }
-            
-            
         }
 	}
 }

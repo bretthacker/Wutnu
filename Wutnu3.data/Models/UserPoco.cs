@@ -15,6 +15,8 @@ namespace Wutnu.Data.Models
 
         public static UserPoco UserToUserPoco(User user)
         {
+            if (user == null) return null;
+
             var res = new UserPoco
             {
                 ApiKey = user.ApiKey,

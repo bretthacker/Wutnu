@@ -53,7 +53,8 @@ namespace Wutnu.Infrastructure.Filters
 
         private static void Unauthorized(HttpActionContext actionContext)
         {
-            actionContext.Response.StatusCode = System.Net.HttpStatusCode.Forbidden;
+            actionContext.Response = actionContext.Request.CreateResponse(System.Net.HttpStatusCode.Forbidden);
+            actionContext.Response.Headers.Add("AuthenticationStatus", "NotAuthorized");
             actionContext.Response.ReasonPhrase = "ApiKey is invalid.";
         }
 

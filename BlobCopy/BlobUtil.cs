@@ -41,6 +41,7 @@ namespace BlobCopy
                 _currDirectory = currDirectory;
                 _web = new WebClient();
 
+                //ignore certificate warnings while in development
                 if (apiUrl.IndexOf("localhost") > -1) ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                 _web.Headers.Set("apikey", apiKey);

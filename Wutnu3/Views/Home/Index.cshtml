@@ -40,9 +40,18 @@
 
 @section scripts {
     <script type="text/javascript">
-        $("#lnkReset").on("click", function () {
-            $("#lnkUrl").val("");
-            $("#lnkShortUrl").val("");
+        $(function () {
+            $("form").on("submit", function () {
+                if ($("#lnkUrl").val() == "") {
+                    SiteUtil.ShowMessage("Please enter a URL to shorten", "Missing URL", SiteUtil.AlertImages.warning, 3000);
+                    $("#lnkUrl").focus();
+                    return false;
+                }
+            });
+            $("#lnkReset").on("click", function () {
+                $("#lnkUrl").val("");
+                $("#lnkShortUrl").val("");
+            });
         });
     </script>    
 }

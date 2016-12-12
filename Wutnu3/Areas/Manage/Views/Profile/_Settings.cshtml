@@ -1,30 +1,47 @@
 ﻿@model Wutnu.Data.Models.UserPoco
-
+<style type="text/css">
+    .row {margin-bottom:10px;}
+</style>
 <div class="panel panel-info">
-    <div class="row">
-        <div class="col-xs-3">
-            Primary Email
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-3">
+                Primary Email
+            </div>
+            <div class="col-xs-9">
+                @Model.PrimaryEmail
+            </div>
         </div>
-        <div class="col-xs-9">
-            @Model.PrimaryEmail
+        <div class="row">
+            <div class="col-xs-3">
+                Storage Root
+            </div>
+            <div class="col-xs-9">
+                @Model.UserOID
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-3">
-            Storage Root
+        <div class="row">
+            <div class="col-xs-3">
+                API Key
+            </div>
+            <div class="col-xs-9">
+                <div class="input-group">
+                    <input id="ApiKey" name="ApiKey" class="form-control" value="@Model.ApiKey" />
+                    <span title="Click to reset the API key" class="glyphicon glyphicon-refresh input-group-addon" id="btnResetApiKey"></span>
+                    <span title="Click to copy the API key to the clipboard" class="glyphicon glyphicon-copy input-group-addon" id="btnCopyApiKey"></span>
+                </div>
+            </div>
         </div>
-        <div class="col-xs-9">
-            @Model.UserOID
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-3">
-            API Key
-        </div>
-        <div class="col-xs-9">
-            <div class="input-group">
-                <input id="ApiKey" name="ApiKey" class="form-control" value="@Model.ApiKey" />
-                <span title="Click to reset the API key" class="glyphicon glyphicon-refresh input-group-addon" id="btnResetApiKey"></span>
+        <div class="row">
+            <div class="well" style="margin:12px;">
+                Download a custom zip containing a console app and key for uploading and downloading from your storage space here using a batch process:
+                <blockquote>
+                    @Html.ActionLink("BlobCopy.zip", "GetCopyBlobZip", "Home", new { area = "Manage" }, new { })
+                </blockquote>
+                Source code for this download is available on GitHub (see the "BlobCopy" project):
+                <blockquote>
+                    <a href="https://github.com/bretthacker/Wutnu" target="_blank">https://github.com/bretthacker/Wutnu</a>
+                </blockquote>
             </div>
         </div>
     </div>
@@ -32,6 +49,21 @@
 
 <script type="text/javascript">
     $(function () {
+        $("#ApiKey").on("focus", function () {
+            setTimeout(function () {
+                $("#ApiKey").select();
+            }, 100);
+        });
+        $("#btnCopyApiKey").on("click", function () {
+            if (SiteUtil.Copy($("#ApiKey").val())) {
+                SiteUtil.ShowMessage("Key copied to clipboard", "Copy Successful", SiteUtil.AlertImages.success);
+            } else {
+                SiteUtil.ShowMessage("Key not copied to clipboard, your browser may not support this operation. Please Ctrl-C to copy.", "Copy Unsuccessful", SiteUtil.AlertImages.warning);
+                setTimeout(function () {
+                    $("#ApiKey").select();
+                }, 100);
+            }
+        });
         $("#btnResetApiKey").on("click", function () {
             var dialog = SiteUtil.ShowModal({
                 body: "Are you sure you want to reset the API access key? If you continue, the key will be reset and remote users of your upload utility will need to reconfigure their settings.<br><br>Are you sure you want to continue?",

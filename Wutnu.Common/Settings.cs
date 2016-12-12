@@ -33,8 +33,8 @@ namespace Wutnu.Common
         {
             DomainName = settings["DomainName"];
             StorageConnectionString = settings["StorageConnectionString"];
-            AuditQueueName = "auditqueue";
             Environment = (EnvType)Enum.Parse(typeof(EnvType), settings["Environment"]);
+            AuditQueueName = string.Format("auditqueue{0}", Environment).ToLower();
             LocalReports = Convert.ToBoolean(settings["LocalReports"]);
         }
         public static string GetMailTemplate(string templateName)

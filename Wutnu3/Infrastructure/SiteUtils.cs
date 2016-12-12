@@ -11,6 +11,8 @@ using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
 using Microsoft.Owin;
 using Wutnu.Common;
+using System.IO;
+using System.IO.Compression;
 
 namespace Wutnu.Infrastructure
 {
