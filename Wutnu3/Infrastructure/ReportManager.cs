@@ -5,6 +5,9 @@ using System.Web;
 using System.Data.SqlClient;
 using System.IO;
 using Microsoft.Reporting.WebForms;
+using Wutnu.Common;
+using Wutnu.Repo;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Wutnu.Infrastructure
 {
@@ -105,6 +108,27 @@ namespace Wutnu.Infrastructure
             res.BinaryWrite(renderedBytes);
             res.Flush();
             //res.Close();
+        }
+        public static void InitBlobReports()
+        {
+            if (!Settings.LocalReports)
+            {
+                //running in Azure, confirm blob reports have been 
+                //initialized
+                var container = WutStorage.GetContainer("reports");
+
+                var blobFile = (CloudBlockBlob)WutStorage.GetBlob(container, "_ViewStart.cshtml");
+                if (blobFile.Properties.Length>-1)
+                    return;
+
+                //file wasn't there, need to copy them all up
+                var filepath = Settings.AppRootPath + "/reportslocal/";
+                var files = Directory.EnumerateFiles(filepath);
+                foreach(var file in files)
+                {
+                    WutStorage.AddBlob(container, file);
+                }
+            }
         }
     }
 }

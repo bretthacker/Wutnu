@@ -62,6 +62,12 @@ namespace Wutnu.Repo
             return blockBlob.DeleteIfExists();
         }
 
+        public static void AddBlob(CloudBlobContainer container, string fileName)
+        {
+            var blob = container.GetBlockBlobReference(Path.GetFileName(fileName));
+            blob.UploadFromFile(fileName);
+        }
+
         /// <summary>
         /// https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-shared-access-signature-part-2/
         /// </summary>

@@ -23,14 +23,14 @@
     "clientIdB2C": {
       "type": "string"
     },
-    "sqlserverAdminLogin": {
+    "sqlAdministratorLogin": {
       "type": "string",
       "minLength": 1
     },
-    "sqlserverAdminLoginPassword": {
+    "sqlAdministratorLoginPassword": {
       "type": "securestring"
     },
-    "siteHostingName": {
+    "hostingPlanName": {
       "type": "string",
       "defaultValue": "[concat(parameters('siteName'),'HostingPlan')]"
     },
@@ -67,13 +67,13 @@
       "type": "string",
       "defaultValue": "B2C_1_DefaultProfileEditPolicy"
     },
-    "repoURL": {
+    "repoUrl": {
       "type": "string",
       "defaultValue": "https://github.com/bretthacker/Wutnu.git"
     },
     "branch": {
       "type": "string",
-      "defaultValue": "master"
+      "defaultValue": "dev"
     },
     "redisUrlDBNum": {
       "type": "string",
@@ -133,7 +133,7 @@
   },
   "resources": [
       {
-          "name": "[parameters('siteHostingName')]",
+          "name": "[parameters('hostingPlanName')]",
           "type": "Microsoft.Web/serverfarms",
           "location": "[resourceGroup().location]",
           "apiVersion": "2014-06-01",
@@ -142,7 +142,7 @@
               "displayName": "WutNuSiteHosting"
           },
         "properties": {
-          "name": "[parameters('siteHostingName')]",
+          "name": "[parameters('hostingPlanName')]",
           "sku": "[parameters('siteHostingSKU')]",
           "workerSize": "[parameters('siteHostingWorkerSize')]",
           "numberOfWorkers": 1
@@ -154,15 +154,15 @@
         "location": "[resourceGroup().location]",
         "apiVersion": "2015-08-01",
         "dependsOn": [
-            "[concat('Microsoft.Web/serverfarms/', parameters('siteHostingName'))]"
+            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
         ],
         "tags": {
-            "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('SiteHostingName'))]": "Resource",
+            "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
             "displayName": "WebApp"
         },
         "properties": {
           "name": "[parameters('siteName')]",
-          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('siteHostingName'))]"
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
         },
         "resources": [
           {
@@ -173,8 +173,7 @@
               "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
             ],
             "properties": {
-              "name": "WutNuGithubDeployment",
-              "RepoUrl": "[parameters('repoURL')]",
+              "repoUrl": "[parameters('repoUrl')]",
               "branch": "[parameters('branch')]",
               "IsManualIntegration": true
             }
@@ -192,7 +191,7 @@
               "displayName": "WebSettings"
             },
             "properties": {
-              "PROJECT": "src\\Wutnu3\\Wutnu.Web.csproj",
+              "PROJECT": "Wutnu3\\Wutnu.Web.csproj",
               "DomainName": "[concat(parameters('siteName'),'.azurewebsites.net')]",
               "RedisConnection": "[concat(parameters('redisName'),'.redis.cache.windows.net', ':6380,ssl=True,abortConnect=False,password=', listKeys(resourceId('Microsoft.Cache/Redis', parameters('redisName')), '2015-08-01').primaryKey)]",
               "RedisUrlDBNum": "[parameters('RedisUrlDBNum')]",
@@ -226,7 +225,7 @@
             ],
             "properties": {
               "WutNuContext": {
-                "value": "[concat('data source=', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName,';initial catalog=',variables('WutNuDBName'),';user id=',parameters('sqlserverAdminLogin'), 'password=',parameters('sqlserverAdminLoginPassword'),';MultipleActiveResultSets=True;App=EntityFramework;')]",
+                "value": "[concat('data source=', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName,';initial catalog=',variables('WutNuDBName'),';user id=',parameters('sqlAdministratorLogin'), ';password=',parameters('sqlAdministratorLoginPassword'),';MultipleActiveResultSets=True;App=EntityFramework;')]",
                 "type": "SQLAzure"
               }
             }
@@ -275,8 +274,8 @@
               "displayName": "sqlserver"
           },
         "properties": {
-          "administratorLogin": "[parameters('sqlserverAdminLogin')]",
-          "administratorLoginPassword": "[parameters('sqlserverAdminLoginPassword')]"
+          "administratorLogin": "[parameters('sqlAdministratorLogin')]",
+          "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]"
         },
           "resources": [
               {

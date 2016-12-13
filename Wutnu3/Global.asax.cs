@@ -85,6 +85,9 @@ namespace Wutnu
                 //BlobCopy zip init
                 BlobCopyZip.InitZip(Settings.AppRootPath);
 
+                //Ensure cloud reports have initialized in blob storage
+                ReportManager.InitBlobReports();
+
                 //VPP
                 System.Web.Hosting.HostingEnvironment.RegisterVirtualPathProvider(new WutVirtualPathProvider());
             }

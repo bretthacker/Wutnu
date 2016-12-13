@@ -23,6 +23,7 @@ namespace Wutnu.Web.Infrastructure
                     {
                         var fileName = Path.GetFileName(file);
                         if (fileName == "api.config.txt") continue;
+                        if (fileName == "BlobCopy.zip") continue;
                         if (fileName == "BlobCopy.exe.config.txt")
                             fileName = "BlobCopy.exe.config";
 
