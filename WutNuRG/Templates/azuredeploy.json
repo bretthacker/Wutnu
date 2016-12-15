@@ -314,5 +314,29 @@
         
   ],
   "outputs": {
+    "sqlFqdn": {
+      "value": "[reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName]",
+      "type": "string"
+    },
+    "sqlName": {
+      "value": "[variables('sqlserverName')]",
+      "type": "string"
+    },
+    "sqlUser": {
+      "value": "[parameters('sqlAdministratorLogin')]",
+      "type": "string"
+    },
+    "sqlPw": {
+      "value": "[parameters('sqlAdministratorLoginPassword')]",
+      "type": "string"
+    },
+    "sqlDbName": {
+      "value": "[variables('WutNuDBName')]",
+      "type": "string"
+    },
+    "websiteName": {
+      "value": "[parameters('siteName')]",
+      "type": "string"
+    }
   }
 }
