@@ -7,7 +7,6 @@ using Microsoft.Owin.Security.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IdentityModel.Tokens;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -16,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Extensions;
 using System.Web;
+using System.IdentityModel.Tokens;
 
 namespace Wutnu.App_Start
 {

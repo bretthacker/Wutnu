@@ -16,6 +16,7 @@ using System.Configuration;
 using System.IdentityModel.Tokens;
 using Wutnu.App_Start;
 using Wutnu.Common;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Wutnu
 {
@@ -60,40 +61,45 @@ namespace Wutnu
             app.UseCookieAuthentication(cookieOptions);
 
             // Required for AAD B2C
-            OpenIdConnectAuthenticationOptions b2cOptions = new OpenIdConnectAuthenticationOptions
-            {
-                // Standard OWIN OIDC parameters
-                Authority = string.Format(aadInstance, tenant),
-                ClientId = clientId,
-                RedirectUri = RedirectUri,
-                PostLogoutRedirectUri = RedirectUri,
-                ProtocolValidator = new OpenIdConnectProtocolValidator { RequireNonce=false },
-                Notifications = new OpenIdConnectAuthenticationNotifications
-                { 
-                    AuthenticationFailed = AuthenticationFailed,
-                    RedirectToIdentityProvider = (context) =>
-                    {
-                        string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
-                        context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
-                        context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
+            // Configure OpenID Connect middleware for each policy
+            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignUpPolicyId));
+            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(ProfilePolicyId));
+            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignInPolicyId));
 
-                        return Task.FromResult(0);
-                    },
-                },
+            //OpenIdConnectAuthenticationOptions b2cOptions = new OpenIdConnectAuthenticationOptions
+            //{
+            //    // Standard OWIN OIDC parameters
+            //    Authority = string.Format(aadInstance, tenant),
+            //    ClientId = clientId,
+            //    RedirectUri = RedirectUri,
+            //    PostLogoutRedirectUri = RedirectUri,
+            //    ProtocolValidator = new OpenIdConnectProtocolValidator { RequireNonce=false },
+            //    Notifications = new OpenIdConnectAuthenticationNotifications
+            //    { 
+            //        AuthenticationFailed = AuthenticationFailed,
+            //        RedirectToIdentityProvider = (context) =>
+            //        {
+            //            string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
+            //            context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
+            //            context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
 
-                Scope = "openid",
-                ConfigurationManager = new B2CConfigurationManager(string.Format(aadInstance + "{1}", tenant, discoverySuffix)),
+            //            return Task.FromResult(0);
+            //        },
+            //    },
 
-                // Optional - used for displaying the user's name in the navigation bar when signed in.
-                TokenValidationParameters = new TokenValidationParameters
-                {  
-                    NameClaimType = "name",
-                },
+            //    Scope = "openid",
+            //    ConfigurationManager = new B2CConfigurationManager(string.Format(aadInstance + "{1}", tenant, discoverySuffix)),
 
-                AuthenticationType = WutAuthTypes.B2C,
-            };
+            //    // Optional - used for displaying the user's name in the navigation bar when signed in.
+            //    TokenValidationParameters = new TokenValidationParameters
+            //    {  
+            //        NameClaimType = "name",
+            //    },
+
+            //    AuthenticationType = WutAuthTypes.B2C,
+            //};
             
-            app.Use(typeof(B2COpenIdConnectAuthenticationMiddleware), app, b2cOptions);
+            //app.Use(typeof(B2COpenIdConnectAuthenticationMiddleware), app, b2cOptions);
 
             // Required for AAD B2B
             OpenIdConnectAuthenticationOptions b2bOptions = new OpenIdConnectAuthenticationOptions
@@ -115,15 +121,15 @@ namespace Wutnu
                         return Task.FromResult(0);
                     },
                 },
-
-                TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                },
+                
+                //TokenValidationParameters = new TokenValidationParameters
+                //{
+                //    ValidateIssuer = false,
+                //},
 
                 AuthenticationType = WutAuthTypes.B2B,
             };
-
+            
             app.UseOpenIdConnectAuthentication(b2bOptions);
         }
 
@@ -131,8 +137,44 @@ namespace Wutnu
         private Task AuthenticationFailed(AuthenticationFailedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
         {
             notification.HandleResponse();
-            notification.Response.Redirect("/Home/Error?message=" + notification.Exception.Message);
+            if (notification.Exception.Message == "access_denied")
+            {
+                notification.Response.Redirect("/");
+            }
+            else
+            {
+                notification.Response.Redirect("/Home/Error?message=" + notification.Exception.Message);
+            }
+
             return Task.FromResult(0);
+        }
+
+        private OpenIdConnectAuthenticationOptions CreateOptionsFromPolicy(string policy)
+        {
+            return new OpenIdConnectAuthenticationOptions
+            {
+                // For each policy, give OWIN the policy-specific metadata address, and
+                // set the authentication type to the id of the policy
+                MetadataAddress = String.Format(aadInstance, tenant, policy),
+                AuthenticationType = policy,
+
+                // These are standard OpenID Connect parameters, with values pulled from web.config
+                ClientId = clientId,
+                RedirectUri = RedirectUri,
+                PostLogoutRedirectUri = RedirectUri,
+                Notifications = new OpenIdConnectAuthenticationNotifications
+                {
+                    AuthenticationFailed = AuthenticationFailed,
+                },
+                Scope = "openid",
+                ResponseType = "id_token",
+
+                //// This piece is optional - it is used for displaying the user's name in the navigation bar.
+                //TokenValidationParameters = new TokenValidationParameters
+                //{
+                //    NameClaimType = "name",
+                //},
+            };
         }
     }
 }

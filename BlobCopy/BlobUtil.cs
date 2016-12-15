@@ -93,11 +93,12 @@ namespace BlobCopy
                 // Create credentials with the SAS token.
                 StorageCredentials credentials = new StorageCredentials(tokenEl[1]);
 
+
                 // Setup the number of the concurrent operations
                 TransferManager.Configurations.ParallelOperations = 64;
 
                 // Setup the transfer context and track the upoload progress
-                TransferContext context = new TransferContext();
+                SingleTransferContext context = new SingleTransferContext();
                 context.ProgressHandler = new Progress<TransferStatus>((progress) =>
                 {
                     int p = Convert.ToInt32(progress.BytesTransferred / bytesToTransfer);
@@ -105,11 +106,6 @@ namespace BlobCopy
                 });
                 
                 context.FileTransferred += _tc_FileTransferred;
-
-                var options = new UploadOptions
-                {
-                    ContentType = contentType
-                };
 
                 var blob = new CloudBlockBlob(blobUri,credentials);
                 blob.Properties.ContentType = contentType;
@@ -123,7 +119,7 @@ namespace BlobCopy
                 EventError(ex);
             }
         }
-
+        
         public void Download(string path)
         {
             try
