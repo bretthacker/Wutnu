@@ -606,11 +606,9 @@
     <Content Include="Views\Account\Signup.cshtml" />
     <Content Include="Scripts\lib\azure.jquery.fine-uploader\LICENSE" />
     <Content Include="Views\Healthcheck\Index.cshtml" />
-    <Content Include="settings.config">
+    <None Include="settings.config">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <PublishState>Excluded</PublishState>
-    </Content>
+    </None>
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
   </ItemGroup>
