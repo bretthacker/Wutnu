@@ -34,6 +34,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PublishDatabases>false</PublishDatabases>
+    <PublishDatabaseSettings>
+      <Objects>
+      </Objects>
+    </PublishDatabaseSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -333,6 +337,10 @@
     <ProjectReference Include="..\Wutnu.Common\Wutnu.Common.csproj">
       <Project>{05be51fb-f26e-463a-9c68-fe08a4db7c49}</Project>
       <Name>Wutnu.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Wutnu.Database\Wutnu.Database.sqlproj">
+      <Project>{1f9dfdd7-0161-4e77-8ad6-22bc60e655f7}</Project>
+      <Name>Wutnu.Database</Name>
     </ProjectReference>
     <ProjectReference Include="..\Wutnu3.data\Wutnu.Data.csproj">
       <Project>{f69a0ec8-e100-403e-a08d-44817540cce1}</Project>
