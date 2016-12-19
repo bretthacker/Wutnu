@@ -6,9 +6,7 @@ using System.Web.Mvc;
 
 // The following using statements were added for this sample.
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.OpenIdConnect;
 using Microsoft.Owin.Security.Cookies;
-using Wutnu.App_Start;
 using System.Security.Claims;
 using Wutnu.Common;
 
@@ -68,17 +66,6 @@ namespace Wutnu.Controllers
             {
                 HttpContext.GetOwinContext().Authentication.Challenge(
                             new AuthenticationProperties() { RedirectUri = "/" }, policyId, WutAuthTypes.B2C);
-
-                //HttpContext.GetOwinContext().Authentication.Challenge(
-                //new AuthenticationProperties(
-                //    new Dictionary<string, string>
-                //    {
-                //        {B2COpenIdConnectAuthenticationHandler.PolicyParameter, policyId}
-                //    })
-                //{
-                //    RedirectUri = "/",
-                //},
-                //WutAuthTypes.B2C);
             }
         }
 
@@ -87,11 +74,13 @@ namespace Wutnu.Controllers
             Dictionary<string, string> dict = new Dictionary<string, string>();
             if (ClaimsPrincipal.Current.FindFirst(Startup.AcrClaimType) != null)
             {
-                dict[B2COpenIdConnectAuthenticationHandler.PolicyParameter] = ClaimsPrincipal.Current.FindFirst(Startup.AcrClaimType).Value;
-                HttpContext.GetOwinContext().Authentication.SignOut(
-                    new AuthenticationProperties(dict),
-                    WutAuthTypes.B2C, 
-                    CookieAuthenticationDefaults.AuthenticationType);
+                // To sign out the user, you should issue an OpenIDConnect sign out request
+                if (Request.IsAuthenticated)
+                {
+                    IEnumerable<AuthenticationDescription> authTypes = HttpContext.GetOwinContext().Authentication.GetAuthenticationTypes();
+                    HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
+                    Request.GetOwinContext().Authentication.GetAuthenticationTypes();
+                }
             }
             else
             {

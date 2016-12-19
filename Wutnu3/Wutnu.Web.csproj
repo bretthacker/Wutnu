@@ -400,9 +400,6 @@
     <Compile Include="api\UpdateErrorController.cs" />
     <Compile Include="api\UrlController.cs" />
     <Compile Include="App_Start\ApiConfig.cs" />
-    <Compile Include="App_Start\B2CConfigurationManager.cs" />
-    <Compile Include="App_Start\B2COpenIdConnectAuthenticationHandler.cs" />
-    <Compile Include="App_Start\B2COpenIdConnectAuthenticationMiddleware.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\HttpDocumentRetriever.cs" />
