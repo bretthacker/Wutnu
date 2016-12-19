@@ -31,6 +31,7 @@ namespace Wutnu
 
         private static string clientId = ConfigurationManager.AppSettings["ida:ClientIdB2C"];
         private static string aadInstance = ConfigurationManager.AppSettings["ida:AadInstance"];
+        private static string aadInstanceB2C = ConfigurationManager.AppSettings["ida:AadInstanceB2C"];
         private static string tenant = ConfigurationManager.AppSettings["ida:TenantB2C"];
         //private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";
         public static string RedirectUri { get; set; }
@@ -155,7 +156,7 @@ namespace Wutnu
             {
                 // For each policy, give OWIN the policy-specific metadata address, and
                 // set the authentication type to the id of the policy
-                MetadataAddress = String.Format(aadInstance, tenant, policy),
+                MetadataAddress = string.Format(aadInstanceB2C, tenant, policy),
                 AuthenticationType = policy,
 
                 // These are standard OpenID Connect parameters, with values pulled from web.config

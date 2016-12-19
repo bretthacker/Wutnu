@@ -42,8 +42,11 @@ namespace Wutnu.Infrastructure.Filters
                     Unauthorized(actionContext);
                     return;
                 }
-                AuthAndAddClaims(user, actionContext);
-
+                if (!AuthAndAddClaims(user, actionContext))
+                {
+                    Unauthorized(actionContext);
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -64,11 +67,14 @@ namespace Wutnu.Infrastructure.Filters
             {
                 List<Claim> claims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.Name, user.PrimaryEmail),
-                    new Claim(ClaimTypes.Email, user.PrimaryEmail),
+
+                    new Claim(ClaimTypes.Name, (user.PrimaryEmail ?? Convert.ToString(user.UserId))),
                     new Claim(CustomClaimTypes.UserId, user.UserId.ToString()),
                     new Claim(CustomClaimTypes.ObjectIdentifier, user.UserOID),
                 };
+
+                if (user.PrimaryEmail != null)
+                    claims.Add(new Claim(ClaimTypes.Email, user.PrimaryEmail));
 
                 // create an identity with the valid claims.
                 ClaimsIdentity identity = new ClaimsIdentity(claims, WutAuthTypes.Api);

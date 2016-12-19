@@ -67,15 +67,18 @@ namespace Wutnu.Controllers
             if ((reqAuth && Request.IsAuthenticated) || (!reqAuth && !Request.IsAuthenticated))
             {
                 HttpContext.GetOwinContext().Authentication.Challenge(
-                new AuthenticationProperties(
-                    new Dictionary<string, string>
-                    {
-                        {B2COpenIdConnectAuthenticationHandler.PolicyParameter, policyId}
-                    })
-                {
-                    RedirectUri = "/",
-                },
-                WutAuthTypes.B2C);
+                            new AuthenticationProperties() { RedirectUri = "/" }, policyId, WutAuthTypes.B2C);
+
+                //HttpContext.GetOwinContext().Authentication.Challenge(
+                //new AuthenticationProperties(
+                //    new Dictionary<string, string>
+                //    {
+                //        {B2COpenIdConnectAuthenticationHandler.PolicyParameter, policyId}
+                //    })
+                //{
+                //    RedirectUri = "/",
+                //},
+                //WutAuthTypes.B2C);
             }
         }
 
