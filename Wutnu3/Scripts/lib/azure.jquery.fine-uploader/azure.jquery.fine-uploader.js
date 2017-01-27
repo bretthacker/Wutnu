@@ -3942,7 +3942,12 @@ qq.AjaxRequester = function(o) {
         registerForUploadProgress(id);
 
         // The last parameter is assumed to be ignored if we are actually using `XDomainRequest`.
-        xhr.open(method, url, true);
+        try {
+            xhr.open(method, url, true);
+        }
+        catch (e) {
+            debugger;
+        }
 
         // Instruct the transport to send cookies along with the CORS request,
         // unless we are using `XDomainRequest`, which is not capable of this.

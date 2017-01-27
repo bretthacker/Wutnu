@@ -17,18 +17,27 @@ namespace Wutnu.Data
         private IDatabase usercache;
         private ConnectionMultiplexer conn;
         private WutNuContext wutContext;
+        private bool isRedisConnected;
 
         public WutCache(WutNuContext model)
         {
+            conn = Cache.Connection;
+            //empty Redis connection string means Redis intentionally isn't configured
+            if (conn==null) 
+                return;
+
             var wb = new HttpContextWrapper(HttpContext.Current);
             wutContext = model;
 
-            conn = Cache.Connection;
+            if (!conn.IsConnected)
+            {
+                Logging.WriteMessageToErrorLog("Redis is down", wutContext);
+                return;
+            }
+
+            isRedisConnected = true;
             urlcache = conn.GetDatabase(Cache.RedisUrlDBNum);
             usercache = conn.GetDatabase(Cache.RedisUserDBNum);
-
-            if (!conn.IsConnected)
-                Logging.WriteMessageToErrorLog("Redis is down", wutContext);
         }
 
         public UserPoco GetUserFromApiKey(string apiKey)
@@ -104,7 +113,7 @@ namespace Wutnu.Data
         {
             try
             {
-                if (conn.IsConnected)
+                if (isRedisConnected && conn.IsConnected)
                 {
                     usercache.StringSet(user.ApiKey, JsonConvert.SerializeObject(user));
                 }
@@ -124,7 +133,7 @@ namespace Wutnu.Data
         {
             try
             {
-                if (conn.IsConnected)
+                if (isRedisConnected && conn.IsConnected)
                     usercache.KeyDelete(user.ApiKey);
 
                 string sOut;
@@ -149,7 +158,7 @@ namespace Wutnu.Data
         {
             try
             {
-                if (conn.IsConnected)
+                if (isRedisConnected && conn.IsConnected)
                 {
                     urlcache.StringSet(url.ShortUrl, JsonConvert.SerializeObject(url));
                 }
@@ -169,7 +178,7 @@ namespace Wutnu.Data
         {
             try
             {
-                if (conn.IsConnected)
+                if (isRedisConnected && conn.IsConnected)
                     urlcache.KeyDelete(url.ShortUrl);
 
                 string sOut;
@@ -187,7 +196,7 @@ namespace Wutnu.Data
         private RedisValue TryGetRedisValue(IDatabase db, string key)
         {
             RedisValue val = new RedisValue();
-            if (conn.IsConnected)
+            if (isRedisConnected && conn.IsConnected)
             {
                 val = db.StringGet(key);
             }
@@ -214,7 +223,7 @@ namespace Wutnu.Data
             UrlColl = new ConcurrentDictionary<string, string>();
             UserColl = new ConcurrentDictionary<string, string>();
             
-            return ConnectionMultiplexer.Connect(RedisConnectionString);
+            return (RedisConnectionString.Length==0) ? null : ConnectionMultiplexer.Connect(RedisConnectionString);
         });
 
         public static ConnectionMultiplexer Connection

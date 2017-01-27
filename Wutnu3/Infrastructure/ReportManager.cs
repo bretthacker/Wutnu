@@ -117,8 +117,7 @@ namespace Wutnu.Infrastructure
                 //initialized
                 var container = WutStorage.GetContainer("reports");
 
-                var blobFile = (CloudBlockBlob)WutStorage.GetBlob(container, "_ViewStart.cshtml");
-                if (blobFile.Properties.Length>-1)
+                if (container.ListBlobs().Count() > 0)
                     return;
 
                 //file wasn't there, need to copy them all up

@@ -50,8 +50,21 @@ namespace Wutnu.App_Start
                 {
                     //local sign-in - TODO: validate that the claim type is unique for local logins... :/
                     claimEmail = ident.Claims.FirstOrDefault(c => c.Type == "emails");
+                    if (claimEmail != null)
+                    {
+                        ident.AddClaim(new Claim(CustomClaimTypes.IdentityProvider, "local"));
+                    }
+                    else
+                    {
+                        claimEmail = ident.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
+                        if (claimEmail == null)
+                        {
+                            Logging.WriteDebugInfoToErrorLog("Error during InitAuth.", new Exception("Unable to determine email claim from account."), wutContext, hctx);
+                            return null;
+                        }
+                        ident.AddClaim(new Claim(CustomClaimTypes.IdentityProvider, "B2EMultiTenant"));
+                    }
                     loginString = claimEmail.Value;
-                    ident.AddClaim(new Claim(CustomClaimTypes.IdentityProvider, "local"));
                 }
                 else
                 {
@@ -120,7 +133,14 @@ namespace Wutnu.App_Start
 
                 var email = ident.Claims.FirstOrDefault(c => c.Type == "emails").Value;
                 ident.AddClaim(new Claim(CustomClaimTypes.AuthType, WutAuthTypes.B2C));
-                ident.AddClaim(new Claim(ClaimTypes.Email, email));
+                if (ident.HasClaim(ClaimTypes.Email))
+                {
+                    ident.SetClaim(ClaimTypes.Email, email);
+                }
+                else
+                {
+                    ident.AddClaim(new Claim(ClaimTypes.Email, email));
+                }
 
                 //nameidentifier already exists
                 ident.AddClaim(new Claim(CustomClaimTypes.FullName, name));
@@ -147,6 +167,11 @@ namespace Wutnu.App_Start
                 //ident.SetClaim(ClaimTypes.Name, user.UserName);
                 //ident.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.UserId));
                 //ident.AddClaim(new Claim(ClaimTypesLW.InternalOrExternal, user.InternalOrExternal));
+            }
+
+            if (!ident.Claims.Any(i => i.Type == ClaimTypes.Email))
+            {
+                ident.AddClaim(new Claim(ClaimTypes.Email, user.PrimaryEmail));
             }
 
             //ident.AddClaim(new Claim(ClaimTypesLW.ResetPasswordOnLogin, user.ResetOnNextLogin.ToString(), typeof(Boolean).ToString()));

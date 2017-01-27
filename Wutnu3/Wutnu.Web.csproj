@@ -558,6 +558,7 @@
     <Content Include="reportslocal\TrafficReport.cshtml" />
     <None Include="Properties\PublishProfiles\wutnublh - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\wutnublh2 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\wutnuweb - Web Deploy %282%29.pubxml" />
     <None Include="reportslocal\WutModels.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>WutModels.Designer.cs</LastGenOutput>
@@ -655,11 +656,17 @@
     <Content Include="Views\Account\Signup.cshtml" />
     <Content Include="Scripts\lib\azure.jquery.fine-uploader\LICENSE" />
     <Content Include="Views\Healthcheck\Index.cshtml" />
-    <None Include="settings.config">
+    <Content Include="settingsTemplate.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="MySettings.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="settings.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -709,6 +716,9 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.0.12\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.0.12\tools\webjobs.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(ProjectDir)mySettings.config $(ProjectDir)settings.config</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

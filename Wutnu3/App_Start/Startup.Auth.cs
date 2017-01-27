@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using System.Configuration;
 using Wutnu.App_Start;
 using Wutnu.Common;
+using System.IdentityModel.Tokens;
 
 namespace Wutnu
 {
@@ -32,7 +33,7 @@ namespace Wutnu
         // B2C policy identifiers
         public static string SignUpPolicyId = ConfigurationManager.AppSettings["ida:SignUpPolicyId"];
         public static string SignInPolicyId = ConfigurationManager.AppSettings["ida:SignInPolicyId"];
-        //public static string ResetPolicyId = ConfigurationManager.AppSettings["ida:PasswordResetPolicyId"];
+        public static string SusiPolicyId = ConfigurationManager.AppSettings["ida:SUSIPolicyId"];
         public static string ProfilePolicyId = ConfigurationManager.AppSettings["ida:UserProfilePolicyId"];
         public static string ResetPolicyId = ConfigurationManager.AppSettings["ida:ResetPolicyId"];
 
@@ -59,6 +60,7 @@ namespace Wutnu
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignUpPolicyId));
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(ProfilePolicyId));
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignInPolicyId));
+            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SusiPolicyId));
 
             // Required for AAD B2B
             OpenIdConnectAuthenticationOptions b2bOptions = new OpenIdConnectAuthenticationOptions
@@ -81,10 +83,10 @@ namespace Wutnu
                     },
                 },
                 
-                //TokenValidationParameters = new TokenValidationParameters
-                //{
-                //    ValidateIssuer = false,
-                //},
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                },
 
                 AuthenticationType = WutAuthTypes.B2B,
             };

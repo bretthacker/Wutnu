@@ -41,6 +41,10 @@ namespace Wutnu
                 BundleConfig.RegisterBundles(BundleTable.Bundles);
                 AntiForgeryConfig.UniqueClaimTypeIdentifier = CustomClaimTypes.ObjectIdentifier;
 
+                Cache.RedisConnectionString = ConfigurationManager.AppSettings["RedisConnection"];
+                Cache.RedisUrlDBNum = Convert.ToInt32(ConfigurationManager.AppSettings["RedisUrlDBNum"]);
+                Cache.RedisUserDBNum = Convert.ToInt32(ConfigurationManager.AppSettings["RedisUserDBNum"]);
+
                 //IoC
                 var builder = new ContainerBuilder();
                 builder.Register(c => new WutNuContext())
@@ -73,9 +77,6 @@ namespace Wutnu
                 }
 
                 Utils.ApplicationName = "Wut?";
-                Cache.RedisConnectionString = ConfigurationManager.AppSettings["RedisConnection"];
-                Cache.RedisUrlDBNum = Convert.ToInt32(ConfigurationManager.AppSettings["RedisUrlDBNum"]);
-                Cache.RedisUserDBNum = Convert.ToInt32(ConfigurationManager.AppSettings["RedisUserDBNum"]);
 
                 AADGraph.GraphToken = ConfigurationManager.AppSettings["B2BGraphKey"];
                 AADGraph.ClientId = ConfigurationManager.AppSettings["ida:ClientIdB2B"];

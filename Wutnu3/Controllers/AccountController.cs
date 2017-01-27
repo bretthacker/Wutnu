@@ -42,12 +42,12 @@ namespace Wutnu.Controllers
 
         public void SignInB2C()
         {
-            B2CAuth(Startup.SignInPolicyId, false);
+            B2CAuth(Startup.SusiPolicyId, false);
        }
 
         public void SignUpB2C()
         {
-            B2CAuth(Startup.SignUpPolicyId, false);
+            B2CAuth(Startup.SusiPolicyId, false);
         }
 
         public new void Profile()
