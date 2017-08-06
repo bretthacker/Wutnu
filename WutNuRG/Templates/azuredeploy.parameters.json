@@ -1,0 +1,27 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "SiteName": {
+      "value": "wutnudemo"
+    },
+    "B2BGraphKey": {
+      "value": "4YNDm11Rg7HieaFeoo9u51xxxqwvxhiYy8VHBQKzTGg="
+    },
+    "tenantB2B": {
+      "value": "hackerdemo.com"
+    },
+    "clientIdB2B": {
+      "value": "594d5c38-37e4-4a65-a255-fc69395b9f96"
+    },
+    "B2CGraphKey": {
+      "value": "]J1TnO5P5b5&v3?_"
+    },
+    "tenantB2C": {
+      "value": "hackerdemob2c.onmicrosoft.com"
+    },
+    "clientIdB2C": {
+      "value": "2a039e5e-91f7-480e-885f-03bb1c6f54d6"
+    }
+  }
+}
