@@ -28,12 +28,10 @@ namespace Wutnu
         private static string aadInstanceB2B = ConfigurationManager.AppSettings["ida:AadInstanceB2B"];
         private static string aadInstanceB2C = ConfigurationManager.AppSettings["ida:AadInstanceB2C"];
         private static string tenant = ConfigurationManager.AppSettings["ida:TenantB2C"];
-        //private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";
+
         public static string RedirectUri { get; set; }
 
         // B2C policy identifiers
-        public static string SignUpPolicyId = ConfigurationManager.AppSettings["ida:SignUpPolicyId"];
-        public static string SignInPolicyId = ConfigurationManager.AppSettings["ida:SignInPolicyId"];
         public static string SusiPolicyId = ConfigurationManager.AppSettings["ida:SUSIPolicyId"];
         public static string ProfilePolicyId = ConfigurationManager.AppSettings["ida:UserProfilePolicyId"];
         public static string ResetPolicyId = ConfigurationManager.AppSettings["ida:ResetPolicyId"];
@@ -58,10 +56,9 @@ namespace Wutnu
 
             // Required for AAD B2C
             // Configure OpenID Connect middleware for each policy
-            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignUpPolicyId));
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(ProfilePolicyId));
-            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignInPolicyId));
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SusiPolicyId));
+            app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(ResetPolicyId));
 
             // Required for AAD Multitenant
             OpenIdConnectAuthenticationOptions multiOptions = new OpenIdConnectAuthenticationOptions
