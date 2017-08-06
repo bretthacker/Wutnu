@@ -3,7 +3,8 @@
 
 *.jfm
 settings.config
-azuredeploy.parameters.json
+azuredeployLocal.parameters.json
+/Wutnu3/MySettings.config
 
 # User-specific files
 *.suo
@@ -245,14 +246,3 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 *.pubxml
-/Wutnu3/reportslocal/SponsorAccounting.ashx
-/Wutnu3/reportslocal/SponsorAccounting.cshtml
-/Wutnu3/reportslocal/SponsorAccounting.rdlc
-/Wutnu3/reportslocal/Accounting.cshtml
-/Wutnu3/reportslocal/Accounting.rdlc
-/Wutnu3/reportslocal/contestresults.cshtml
-/Wutnu3/reportslocal/contestresults.rdlc
-/Wutnu3/reportslocal/Members.ashx
-/Wutnu3/reportslocal/Members.cshtml
-/Wutnu3/reportslocal/Members.rdlc
-/Wutnu3/MySettings.config

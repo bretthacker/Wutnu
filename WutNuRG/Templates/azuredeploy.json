@@ -58,9 +58,23 @@
         "description": "The sign in policy name for your B2C application in Azure AD (see docs)"
       }
     },
+    "ida:SUSIPolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_SignInSignUpPolicy",
+      "metadata": {
+        "description": "The sign up sign in policy name for your B2C application in Azure AD (see docs)"
+      }
+    },
     "ida:UserProfilePolicyId": {
       "type": "string",
       "defaultValue": "B2C_1_DefaultProfileEditPolicy",
+      "metadata": {
+        "description": "The user profile policy name for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "ida:ResetProfilePolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_DefaultReset",
       "metadata": {
         "description": "The user profile policy name for your B2C application in Azure AD (see docs)"
       }
@@ -185,18 +199,22 @@
             "RedisUrlDBNum": "[variables('RedisUrlDBNum')]",
             "RedisUserDBNum": "[variables('RedisUserDBNum')]",
             "StorageConnectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+            "ActivateWebApiTracing": "false",
+            "ida:AadInstanceMulti": "https://login.microsoftonline.com/common",
+            "ida:AadInstanceB2B": "https://login.microsoftonline.com/{0}",
+            "ida:AadInstanceB2C": "https://login.microsoftonline.com/{0}/v2.0/.well-known/openid-configuration?p={1}",
+            "ida:RedirectUri": "[concat('https://', variables('siteName'),'.azurewebsites.net')]",
             "B2BGraphKey": "[parameters('B2BGraphKey')]",
             "B2CGraphKey": "[parameters('B2CGraphKey')]",
-            "ActivateWebApiTracing": "false",
-            "ida:AadInstance": "https://login.microsoftonline.com/{0}",
-            "ida:RedirectUri": "[concat('https://', variables('siteName'),'.azurewebsites.net')]",
             "ida:TenantB2B": "[parameters('TenantB2B')]",
             "ida:ClientIdB2B": "[parameters('ClientIdB2B')]",
             "ida:TenantB2C": "[parameters('TenantB2C')]",
             "ida:ClientIdB2C": "[parameters('ClientIdB2C')]",
-            "ida:SignUpPolicyId": "B2C_1_DefaultSignup",
-            "ida:SignInPolicyId": "B2C_1_DefaultSignin",
-            "ida:UserProfilePolicyId": "B2C_1_DefaultProfileEditPolicy",
+            "ida:SignUpPolicyId": "[parameters('ida:SignUpPolicyId')]",
+            "ida:ResetPolicyId": "[parameters('ida:ResetProfilePolicyId')]",
+            "ida:SUSIPolicyId": "[parameters('ida:SUSIPolicyId')]",
+            "ida:SignInPolicyId": "[parameters('ida:SignInPolicyId')]",
+            "ida:UserProfilePolicyId": "[parameters('ida:UserProfilePolicyId')]",
             "ConfigStorageCors": "true",
             "Environment": "[variables('DeploymentEnvironment')]",
             "LocalReports": "false",

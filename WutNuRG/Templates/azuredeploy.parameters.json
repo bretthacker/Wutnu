@@ -6,22 +6,22 @@
       "value": "wutnudemo"
     },
     "B2BGraphKey": {
-      "value": "4YNDm11Rg7HieaFeoo9u51xxxqwvxhiYy8VHBQKzTGg="
+      "value": "mygraphsecret=="
     },
     "tenantB2B": {
-      "value": "hackerdemo.com"
+      "value": "contoso.com"
     },
     "clientIdB2B": {
-      "value": "594d5c38-37e4-4a65-a255-fc69395b9f96"
+      "value": "my-client-id"
     },
     "B2CGraphKey": {
-      "value": "]J1TnO5P5b5&v3?_"
+      "value": "myb2cgraphsecret=="
     },
     "tenantB2C": {
-      "value": "hackerdemob2c.onmicrosoft.com"
+      "value": "contoso.onmicrosoft.com"
     },
     "clientIdB2C": {
-      "value": "2a039e5e-91f7-480e-885f-03bb1c6f54d6"
+      "value": "my-b2c-client-id"
     }
   }
 }
