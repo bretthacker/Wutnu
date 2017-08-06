@@ -17,6 +17,7 @@ namespace Wutnu.Common
     public static class WutAuthTypes
     {
         public const string B2B = "OpenIdConnect-B2B";
+        public const string B2EMulti = "OpenIdConnect-Multi";
         public const string B2C = "OpenIdConnect-B2C";
         public const string Api = "ApiAuth";
     }

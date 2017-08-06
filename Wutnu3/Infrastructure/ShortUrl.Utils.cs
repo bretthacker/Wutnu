@@ -71,22 +71,22 @@ namespace Infrastructure
                     //remove existing user assignments
                     models.UserAssignments.RemoveRange(item.UserAssignments);
                 }
-                User assignedUser;
+                int? assignmentId = null;
 
                 if (hasEmails)
                 {
                     var emails = oUrl.UserEmails.Split(',');
                     foreach(var email in emails)
                     {
-                        assignedUser = models.Users.SingleOrDefault(u => u.PrimaryEmail == email);
+                        //var assignedUser = models.Users.SingleOrDefault(u => u.PrimaryEmail == email);
                         
-                        int? assignmentId = (assignedUser != null) ? assignedUser.UserId : (int?)null;
+                        //assignmentId = (assignedUser != null) ? assignedUser.UserId : (int?)null;
 
                         models.UserAssignments.Add(new UserAssignment
                         {
                             UserEmail = email.Trim(),
                             WutLinkId = item.WutLinkId,
-                            UserId = assignmentId
+                            UserId = null
                         });
                     }
                 }

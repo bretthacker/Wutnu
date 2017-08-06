@@ -24,7 +24,8 @@ namespace Wutnu
         private static string tenantB2B = ConfigurationManager.AppSettings["ida:TenantB2B"];
 
         private static string clientId = ConfigurationManager.AppSettings["ida:ClientIdB2C"];
-        private static string aadInstance = ConfigurationManager.AppSettings["ida:AadInstance"];
+        private static string aadInstanceMulti = ConfigurationManager.AppSettings["ida:AadInstanceMulti"];
+        private static string aadInstanceB2B = ConfigurationManager.AppSettings["ida:AadInstanceB2B"];
         private static string aadInstanceB2C = ConfigurationManager.AppSettings["ida:AadInstanceB2C"];
         private static string tenant = ConfigurationManager.AppSettings["ida:TenantB2C"];
         //private static string redirectUri = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";
@@ -62,14 +63,11 @@ namespace Wutnu
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SignInPolicyId));
             app.UseOpenIdConnectAuthentication(CreateOptionsFromPolicy(SusiPolicyId));
 
-            // Required for AAD B2B
-            OpenIdConnectAuthenticationOptions b2bOptions = new OpenIdConnectAuthenticationOptions
+            // Required for AAD Multitenant
+            OpenIdConnectAuthenticationOptions multiOptions = new OpenIdConnectAuthenticationOptions
             {
-                Authority = string.Format(aadInstance, tenantB2B),
+                Authority = aadInstanceMulti,
                 ClientId = clientIdB2B,
-                //RedirectUri = RedirectUri,
-                //PostLogoutRedirectUri = RedirectUri,
-                //ProtocolValidator = new OpenIdConnectProtocolValidator { RequireNonce = false },
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
                     AuthenticationFailed = AuthenticationFailed,
@@ -78,19 +76,39 @@ namespace Wutnu
                         string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
                         context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
                         context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
-
                         return Task.FromResult(0);
                     },
                 },
-                
                 TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                 },
+                AuthenticationType = WutAuthTypes.B2EMulti,
+            };
+            app.UseOpenIdConnectAuthentication(multiOptions);
 
+            // Required for AAD B2B
+            OpenIdConnectAuthenticationOptions b2bOptions = new OpenIdConnectAuthenticationOptions
+            {
+                Authority = string.Format(aadInstanceB2B, tenantB2B),
+                ClientId = clientIdB2B,
+                Notifications = new OpenIdConnectAuthenticationNotifications
+                {
+                    AuthenticationFailed = AuthenticationFailed,
+                    RedirectToIdentityProvider = (context) =>
+                    {
+                        string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
+                        context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
+                        context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
+                        return Task.FromResult(0);
+                    },
+                },
+                TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                },
                 AuthenticationType = WutAuthTypes.B2B,
             };
-            
             app.UseOpenIdConnectAuthentication(b2bOptions);
         }
 

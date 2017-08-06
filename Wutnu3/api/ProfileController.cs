@@ -24,7 +24,7 @@ namespace Wutnu.Web.api
         }
 
         [HttpPost]
-        public bool ResetApiKey(UserPoco data)
+        public UserPoco ResetApiKey(UserPoco data)
         {
             data.UserId = UserId;
             data.ApiKey = SiteUtils.GenApiKey();

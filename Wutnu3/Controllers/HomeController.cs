@@ -167,7 +167,7 @@ namespace Wutnu.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "When you look at that freaky long URL and go, \"Wut?\".";
+            ViewBag.Message = "Mother of All Azure Demos (MOAAD)";
 
             return View();
         }

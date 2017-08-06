@@ -40,9 +40,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-2"></div>
+                    <div class="col-xs-2"><label for="testShortLink">Test Link</label></div>
                     <div class="col-xs-10">
-                        <a target="_blank" id="testShortLink" data-root="@rootUrl" href="@rootUrl">@rootUrl</a>
+                        <div class="input-group">
+                            <input class="form-control" id="testShortLink" data-root="@rootUrl" value="@rootUrl" />
+                            <span title="Click to open the link in a new window" class="glyphicon glyphicon-link input-group-addon" id="btnOpenTestLink"></span>
+                            <span title="Click to copy the test link to the clipboard" class="glyphicon glyphicon-copy input-group-addon" id="btnCopyTestLink"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

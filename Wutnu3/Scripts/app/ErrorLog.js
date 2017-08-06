@@ -100,11 +100,11 @@
         var res = $("<div/>");
         var i = 0;
         for (col in data) {
-            i++;
-            var ds = "";
-            var bg = (i % 2 == 0) ? "#fafafa;" : "";
-            var d = $("<div/>").css("backgroundColor", bg).appendTo(res);
             if (data[col] != null) {
+                i++;
+                var ds = "";
+                var bg = (i % 2 == 0) ? "#fafafa;" : "";
+                var d = $("<div/>").css("backgroundColor", bg).appendTo(res);
                 if (col=='ErrorDate') {
                     ds = SiteUtil.UtcToServerAndLocal(data[col]);
                 } else if (typeof data[col] == "object") {

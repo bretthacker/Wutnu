@@ -27,10 +27,12 @@ namespace Wutnu
 {
     public class MvcApplication : HttpApplication
     {
-        protected async void Application_Start()
+        protected void Application_Start()
         {
             try
             {
+                SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
+
                 //Registration
                 ControllerBuilder.Current.DefaultNamespaces.Add("Wutnu.Controllers");
                 AreaRegistration.RegisterAllAreas();

@@ -21,13 +21,12 @@ namespace Wutnu.Data
 
         public WutCache(WutNuContext model)
         {
+            wutContext = model;
+
             conn = Cache.Connection;
             //empty Redis connection string means Redis intentionally isn't configured
             if (conn==null) 
                 return;
-
-            var wb = new HttpContextWrapper(HttpContext.Current);
-            wutContext = model;
 
             if (!conn.IsConnected)
             {

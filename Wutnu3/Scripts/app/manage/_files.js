@@ -12,6 +12,18 @@
             window.location.hash = "list";
         });
     });
+
+    $("#btnOpenTestLink").on("click", function () {
+        window.open($("#testShortLink").val());
+    });
+
+    $("#btnCopyTestLink").on("click", function () {
+        if (SiteUtil.Copy($("#testShortLink").val())) {
+            SiteUtil.ShowMessage("Link copied to clipboard", "Copy Successful", SiteUtil.AlertImages.success);
+        } else {
+            SiteUtil.ShowMessage("Link not copied to clipboard, your browser may not support this operation. Please Ctrl-C to copy.", "Copy Unsuccessful", SiteUtil.AlertImages.warning);
+        }
+    });
     $("#btnDeleteFile").on("click", function () {
         if (!confirm("Are you sure you want to delete this file?")) return;
 

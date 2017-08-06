@@ -1,4 +1,7 @@
-# WutNu
+# WutNu - Mother of All Azure Demos (MOAAD)
+
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fbretthacker%2Fwutnu%2Fmaster%2FWutNuRG%2FTemplates%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
+
 Based on the initial "Unofficial Work Account &amp; B2C Combined Sample App" by Danny Strockis at [https://github.com/dstrockis/AAD-B2C-Hybrid](https://github.com/dstrockis/AAD-B2C-Hybrid). 
 
 This app is designed as a multi-purpose Azure demo, utilizing:
@@ -18,14 +21,7 @@ Files are uploadable via the web portal - each authenticated user gets a blob st
 User accounts have a rudimentary "API Key" generated that is associated with their blob container. The "BlobCopy" project is a simple console app that allows list/put/get operations against the container associated with the api key (kept in the settings file). The utility makes an API call and, for put and get operations, gets a SAS token to upload and download directly to blob storage.
 
 ISSUES:
-- There is an ARM project (WutNuRG) in the solution but it's not complete.
 - The report engine "works on my box" but rendering is having an issue in Azure - the report renders and the database is called; it may be font-related.
-- If you decide to use the reports, they are designed to be run from blob storage - create a "reports" container and copy the following from Wutnu.Web/localreports:
-  - TrafficReport.cshtml
-  - TrafficReport.rdlc
-  - _ViewStart.cshtml
-- web.config has application settings commented out and is wired to look for "settings.config". You will need to comment out the settings.config call and uncomment the local settings, or create your own settings.config.
-- The ARM template has all of the application settings defined for the web app, but it's not ready for deployment yet.
 - This is sample code - it's strictly a proof of concept.
 
 INSTALLATION:

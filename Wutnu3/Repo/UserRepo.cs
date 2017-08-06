@@ -25,7 +25,7 @@ namespace Wutnu.Web.Repo
         {
             return UserPoco.UserToUserPoco(_context.Users.SingleOrDefault(u => u.UserId==userId));
         }
-        public bool UpdateUser(UserPoco user)
+        public UserPoco UpdateUser(UserPoco user)
         {
             try
             {
@@ -33,12 +33,12 @@ namespace Wutnu.Web.Repo
                 u.ApiKey = user.ApiKey;
                 _context.SaveChanges();
 
-                return true;
+                return user;
             }
             catch (Exception ex)
             {
                 Logging.WriteDebugInfoToErrorLog("Error updating user", ex);
-                return false;
+                return null;
             }
         }
         public IEnumerable<AssignedUserPoco> DeleteAssignedUser(int ownerId, UserPoco user)

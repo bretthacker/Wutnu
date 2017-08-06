@@ -27,7 +27,19 @@ namespace Wutnu.Controllers
             return View();
         }
 
-        public void SignInWork()
+        public void SignInWorkMulti()
+        {
+            if (!Request.IsAuthenticated)
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(
+                    new AuthenticationProperties
+                    {
+                        RedirectUri = "/",
+                    },
+                    WutAuthTypes.B2EMulti);
+            }
+        }
+        public void SignInWorkGuest()
         {
             if (!Request.IsAuthenticated)
             {

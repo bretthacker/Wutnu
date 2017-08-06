@@ -145,8 +145,8 @@ var ManageMain = function () {
         var root = lnk.data("root");
         if (data.IsProtected) root += "a/";
 
-        lnk.attr("href", root + data.ShortUrl);
-        lnk.html(root + data.ShortUrl);
+        //lnk.attr("href", root + data.ShortUrl);
+        lnk.val(root + data.ShortUrl);
     }
     function checkProtected() {
         $("#protectedInfo").css("display", ($("#IsProtected")[0].checked) ? "block" : "none");

@@ -70,11 +70,12 @@
                 title: "Confirm API Key Reset",
                 callback: function () {
                     var data = { "ApiKey": $("#ApiKey").val() }
-                    SiteUtil.AjaxCall("/api/Profile", data, function (res) {
-                        if (res) {
-                            SiteUtil.ShowMessage("API Key updated successfully", SiteUtil.AlertImages.success);
-                        } else {
+                    SiteUtil.AjaxCall("/api/Profile/ResetApiKey", data, function (res) {
+                        if (res==null) {
                             SiteUtil.ShowMessage("There was an error updating the API Key - please try again later.", SiteUtil.AlertImages.error);
+                        } else {
+                            $("#ApiKey").val(res.ApiKey);
+                            SiteUtil.ShowMessage("API Key updated successfully", SiteUtil.AlertImages.success);
                         }
                     }, "POST");
                 }

@@ -96,6 +96,12 @@ namespace BlobCopy
                 Length = "Length"
             }));
             Console.WriteLine(new String('-', 90));
+            if (data.Count() == 0)
+            {
+                Console.WriteLine("No files found");
+                return;
+            }
+
             foreach (var item in data)
             {
                 Console.WriteLine(GetFileLineItem(item));
