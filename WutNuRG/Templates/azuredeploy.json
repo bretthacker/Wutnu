@@ -79,9 +79,9 @@
       }
     },
     "redisSKUCapacity": {
-      "type": "int",
-      "allowedValues": [ 0, 1, 2, 3, 4, 5, 6 ],
-      "defaultValue": 0
+      "type": "string",
+      "allowedValues": [ "0", "1", "2", "3", "4", "5", "6" ],
+      "defaultValue": "0"
     },
     "SqlDBEdition": {
       "type": "string",
