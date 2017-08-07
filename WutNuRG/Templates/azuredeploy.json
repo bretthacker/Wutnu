@@ -108,7 +108,7 @@
   },
   "variables": {
     "repoUrl": "https://github.com/bretthacker/Wutnu.git",
-    "branch": "dev",
+    "branch": "master",
     "sqlserverName": "[toLower(concat(parameters('hostingPlanName'), 'sqlsrv'))]",
     "WutNuDBName": "[concat(parameters('hostingPlanName'), 'db')]",
     "sqlAdministratorLogin": "[concat(parameters('hostingPlanName'), '_app')]",
