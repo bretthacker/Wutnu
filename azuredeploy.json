@@ -9,7 +9,7 @@
       }
     },
     "sqlAdministratorLoginPassword": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "description": "Sql database server administrator password"
       }

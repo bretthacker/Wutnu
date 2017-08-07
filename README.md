@@ -1,6 +1,6 @@
 # WutNu - Mother of All Azure Demos (MOAAD)
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fbretthacker%2Fwutnu%2Fmaster%2FWutNuRG%2FTemplates%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fbretthacker%2Fwutnu%2Fmaster%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
 
 Based on the initial "Unofficial Work Account &amp; B2C Combined Sample App" by Danny Strockis at [https://github.com/dstrockis/AAD-B2C-Hybrid](https://github.com/dstrockis/AAD-B2C-Hybrid). 
 
