@@ -8,6 +8,12 @@
         "description": "Your new hosting plan name. This name will be used to form the names of other deployed resources as well."
       }
     },
+    "sqlAdministratorLoginPassword": {
+      "type": "string",
+      "metadata": {
+        "description": "Sql database server administrator password"
+      }
+    },
     "B2BGraphKey": {
       "type": "string",
       "metadata": {
@@ -106,7 +112,6 @@
     "sqlserverName": "[toLower(concat(parameters('hostingPlanName'), 'sqlsrv'))]",
     "WutNuDBName": "[concat(parameters('hostingPlanName'), 'db')]",
     "sqlAdministratorLogin": "[concat(parameters('hostingPlanName'), '_app')]",
-    "sqlAdministratorLoginPassword": "[concat('!', uniqueString(subscription().subscriptionId), '-P~3$a', parameters('hostingPlanName'))]",
     "siteName": "[toLower(concat(parameters('hostingPlanName'), 'web'))]",
     "redisName": "[toLower(concat(parameters('hostingPlanName'),'cache'))]",
     "storageAccountName": "[toLower(concat(parameters('hostingPlanName'),'storage'))]",
@@ -215,7 +220,7 @@
           ],
           "properties": {
             "WutNuContext": {
-              "value": "[concat('data source=', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName,';initial catalog=',variables('WutNuDBName'),';user id=',variables('sqlAdministratorLogin'), ';password=',variables('sqlAdministratorLoginPassword'),';MultipleActiveResultSets=True;App=EntityFramework;')]",
+              "value": "[concat('data source=', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName,';initial catalog=',variables('WutNuDBName'),';user id=',variables('sqlAdministratorLogin'), ';password=',parameters('sqlAdministratorLoginPassword'),';MultipleActiveResultSets=True;App=EntityFramework;')]",
               "type": "SQLAzure"
             }
           }
@@ -265,7 +270,7 @@
           },
         "properties": {
           "administratorLogin": "[variables('sqlAdministratorLogin')]",
-          "administratorLoginPassword": "[variables('sqlAdministratorLoginPassword')]"
+          "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]"
         },
           "resources": [
               {
@@ -317,7 +322,7 @@
       "type": "string"
     },
     "sqlPw": {
-      "value": "[variables('sqlAdministratorLoginPassword')]",
+      "value": "[parameters('sqlAdministratorLoginPassword')]",
       "type": "string"
     },
     "sqlDbName": {
