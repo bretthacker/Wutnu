@@ -196,7 +196,7 @@
             "ida:ClientIdB2B": "[parameters('ClientIdB2B')]",
             "ida:TenantB2C": "[parameters('TenantB2C')]",
             "ida:ClientIdB2C": "[parameters('ClientIdB2C')]",
-            "ida:ResetPolicyId": "[parameters('ida:ResetProfilePolicyId')]",
+            "ida:ResetPolicyId": "[parameters('ida:ResetPwPolicyId')]",
             "ida:SUSIPolicyId": "[parameters('ida:SUSIPolicyId')]",
             "ida:UserProfilePolicyId": "[parameters('ida:UserProfilePolicyId')]",
             "ConfigStorageCors": "true",
