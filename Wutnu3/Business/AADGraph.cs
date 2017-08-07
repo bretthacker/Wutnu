@@ -51,7 +51,7 @@ namespace Wutnu.Business
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception("Error getting user info from Graph", ex);
             }
         }
 

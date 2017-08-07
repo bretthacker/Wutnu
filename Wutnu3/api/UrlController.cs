@@ -81,7 +81,7 @@ namespace Wutnu.api
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception("Error getting URLs from API", ex);
             }
         }
 

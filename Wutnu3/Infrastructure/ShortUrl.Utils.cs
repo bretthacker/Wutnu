@@ -71,7 +71,6 @@ namespace Infrastructure
                     //remove existing user assignments
                     models.UserAssignments.RemoveRange(item.UserAssignments);
                 }
-                int? assignmentId = null;
 
                 if (hasEmails)
                 {
