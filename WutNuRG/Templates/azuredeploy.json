@@ -9,7 +9,7 @@
       }
     },
     "sqlAdministratorLoginPassword": {
-      "type": "string",
+      "type": "securestring",
       "metadata": {
         "description": "Sql database server administrator password"
       }
@@ -319,10 +319,6 @@
     },
     "sqlUser": {
       "value": "[variables('sqlAdministratorLogin')]",
-      "type": "string"
-    },
-    "sqlPw": {
-      "value": "[parameters('sqlAdministratorLoginPassword')]",
       "type": "string"
     },
     "sqlDbName": {
