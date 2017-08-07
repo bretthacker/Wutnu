@@ -106,7 +106,7 @@
     "sqlserverName": "[toLower(concat(parameters('hostingPlanName'), 'sqlsrv'))]",
     "WutNuDBName": "[concat(parameters('hostingPlanName'), 'db')]",
     "sqlAdministratorLogin": "[concat(parameters('hostingPlanName'), '_app')]",
-    "sqlAdministratorLoginPassword": "[concat(uniqueString(subscription().subscriptionId), parameters('hostingPlanName'))]",
+    "sqlAdministratorLoginPassword": "[concat(uniqueString(subscription().subscriptionId), '-P', parameters('hostingPlanName'))]",
     "siteName": "[toLower(concat(parameters('hostingPlanName'), 'web'))]",
     "redisName": "[toLower(concat(parameters('hostingPlanName'),'cache'))]",
     "storageAccountName": "[toLower(concat(parameters('hostingPlanName'),'storage'))]",
