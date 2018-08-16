@@ -119,21 +119,5 @@ echo Finished successfully.
 :: Custom Wutnu database config
 :: ----------------------------
 
-:: Parse connection string
-SET _conn=%SQLAZURECONNSTR_WutNuContext%
-SET _conn=%_conn: =%
-SET _conn="%_conn:;=";"%"
-FOR %%a IN (%_conn%) DO @FOR /F %%b IN (%%a) DO SET _%%b
-SET _conn=
-
-:: Call to check for DB schema update
-for /f "delims=" %%A in ('sqlcmd.exe -s "" -W -h -1 -S "%_datasource%" -U "%_userid%" -P "%_password%" -d "%_initialcatalog%" -Q "exit(set nocount on; select count(*) from sys.tables where name='User')"') do set "DBConfigured=%%A"
-
-if "%DBConfigured%"=="0" (
-	echo "configuring database"
-	.\Wutnu3\bin\sqlpackage /Action:Publish /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
-) else (
-	.\Wutnu3\bin\sqlpackage /Action:Update /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
-)
-
+.\Wutnu3\bin\sqlpackage /Action:Publish /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
 echo "DB configuration done"
