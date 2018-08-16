@@ -266,10 +266,6 @@
               "Value": "[parameters('ClientIdB2C')]"
             },
             {
-              "Name": "B2BSelfServPortal",
-              "Value": "[parameters('B2BSelfServPortal')]"
-            },
-            {
               "Name": "ida:ResetPolicyId",
               "Value": "[parameters('ida:ResetPwPolicyId')]"
             },
