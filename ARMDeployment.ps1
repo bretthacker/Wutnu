@@ -54,16 +54,20 @@ $deployError = $null
 $deployment = New-AzureRmResourceGroupDeployment -ResourceGroupName $RGName -TemplateParameterObject $parms -TemplateFile $TemplateFile -Name "WutNu$version"  -Force -Verbose -ErrorAction SilentlyContinue -ErrorVariable deployError
 if ($deployError) {
     $str = $deployError[0].Message
-    $trackingIdSt = $str.IndexOf("The tracking id is '")
-    if ($trackingIdSt -lt 0) {
+    if ($str) {
+        $trackingIdSt = $str.IndexOf("The tracking id is '")
+        if ($trackingIdSt -lt 0) {
+            throw $deployError
+        }
+        trackingIdSt += "The tracking id is '".Length
+        $trackingId = $str.Substring($trackingIdSt, 36)   #length of GUID string
+        Start-Sleep -Seconds 2                            #wait for ARM log to complete
+        $errorDetail =  get-azurermlog -CorrelationId $trackingId -DetailedOutput
+        $errorContent = (ConvertFrom-Json $errorDetail[0].Properties.Content.statusMessage.ToString()).error.details | ConvertTo-Json
+        throw $errorContent
+    } else {
         throw $deployError
     }
-    trackingIdSt += "The tracking id is '".Length
-    $trackingId = $str.Substring($trackingIdSt, 36)   #length of GUID string
-    Start-Sleep -Seconds 2                            #wait for ARM log to complete
-    $errorDetail =  get-azurermlog -CorrelationId $trackingId -DetailedOutput
-    $errorContent = (ConvertFrom-Json $errorDetail[0].Properties.Content.statusMessage.ToString()).error.details | ConvertTo-Json
-    throw $errorContent
 }
 
 if ($deployment.ProvisioningState -eq "Succeeded") {
