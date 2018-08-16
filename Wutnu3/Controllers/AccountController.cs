@@ -137,7 +137,7 @@ namespace Wutnu.Controllers
                 }
             } else
             {
-
+                Response.Redirect("/");
             }
         }
 	}
