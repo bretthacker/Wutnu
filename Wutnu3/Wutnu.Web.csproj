@@ -676,7 +676,9 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)Wutnu.Database\bin\Debug\Wutnu.Database.dacpac $(SolutionDir)</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)Wutnu.Database\bin\Debug\Wutnu.Database.dacpac" (
+    copy $(SolutionDir)Wutnu.Database\bin\Debug\Wutnu.Database.dacpac $(SolutionDir)
+)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.1.0\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.1.0\tools\webjobs.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
