@@ -25,6 +25,7 @@ $parms = @{
     "tenantB2C"                       = "[Name of Azure AD B2C tenant, like contosob2c.onmicrosoft.com, or tenant ID (guid)]";
     "clientIdB2C"                     = "[Application ID for Azure AD B2C app registration]";
     "AdminGroupId"                    = "[GUID group ID of group in Azure AD tenant containing admin users]";
+    "B2BSelfServPortal"               = "[Optional, name of B2B self-service invitation portal]"
 }
 #END DEPLOYMENT OPTIONS
 
