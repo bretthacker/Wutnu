@@ -4,8 +4,12 @@
     [PrimaryEmail] NVARCHAR (128) NULL,
     [ExtClaims]    VARCHAR (MAX)  NULL,
     [ApiKey]       NVARCHAR (128) NULL,
+    [iss]          NVARCHAR (255) NULL,
+    [idp]          NVARCHAR (255) NULL,
     PRIMARY KEY CLUSTERED ([UserId] ASC)
 );
+
+
 
 
 GO
