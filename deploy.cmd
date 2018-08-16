@@ -131,9 +131,9 @@ for /f "delims=" %%A in ('sqlcmd.exe -s "" -W -h -1 -S "%_datasource%" -U "%_use
 
 if "%DBConfigured%"=="0" (
 	echo "configuring database"
-	sqlpackage /Action:Publish /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
+	.\Wutnu3\bin\sqlpackage /Action:Publish /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
 ) else (
-	sqlpackage /Action:Update /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
+	.\Wutnu3\bin\sqlpackage /Action:Update /SourceFile:"%DEPLOYMENT_SOURCE%\site\repository\Wutnu.Database.dacpac" /TargetConnectionString:"%SQLAZURECONNSTR_WutNuContext%"
 )
 
 echo "DB configuration done"

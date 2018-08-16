@@ -71,8 +71,8 @@ if ($deployError) {
 }
 
 if ($deployment.ProvisioningState -eq "Succeeded") {
-    $siteName = $deployment.Outputs.webSiteName.Value
-    start "https://$($siteName).azurewebsites.net/"
+    $siteName = "https://" + $deployment.Outputs.webSiteName.Value + ".azurewebsites.net/"
+    start $siteName
     Write-Host "---------"
     $deployment.Outputs | ConvertTo-Json
 
