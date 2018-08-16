@@ -1,0 +1,52 @@
+﻿@using Wutnu.Common
+@{
+    ViewBag.Title = "Sign In";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (ViewBag.Redir != null)
+{
+    <div class="alert alert-info alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        In order to retrieve this link, you have to authenticate first. Choose any method that is registered with the email address you were shared with.
+    </div>
+}
+
+<div>
+    <div class="loginbutton col-md-4">
+        Individual Users (B2C)<br />
+        <input type="button" style="margin:10px;width:200px" class="btn btn-primary" onclick="window.location.href='/Account/SignInB2C?redir=@ViewBag.Redir'" value="Sign In" />
+    </div>
+
+    <div class="loginbutton col-md-4">
+        SaaS Users (B2E)<br />
+        <input type="button" style="margin:10px;width:200px" class="btn btn-primary" onclick="window.location.href='/Account/SignInWorkMulti?redir=@ViewBag.Redir'" value="Sign In" />
+    </div>
+
+    <div class="loginbutton col-md-4">
+        Hosting Org Users<br />
+        <input type="button" style="margin:10px;width:200px" class="btn btn-primary" onclick="window.location.href='/Account/SignInWorkGuest?redir=@ViewBag.Redir'" value="Sign In" /><br />
+        @if (Settings.B2BSelfServPortal != null)
+        {
+            <div>(<a href='@Settings.B2BSelfServPortal'>Request Access to Host Org</a>)</div>
+        }
+    </div>
+</div>
+
+<hr />
+
+<div class="loginbutton">
+    Unified: Local, Work, and Federated via B2C<br />
+    <input type="button" style="margin:10px;width:200px" class="btn btn-primary" onclick="window.location.href='/Account/SignInUnified?redir=@ViewBag.Redir'" value="Unified Sign-In" />
+</div>
+
+@section styles
+{
+    <style type="text/css">
+        div.loginbutton {
+            margin-top: 16px;
+            text-align: center;
+        }
+    </style>
+}

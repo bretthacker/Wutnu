@@ -1,0 +1,44 @@
+﻿@model Wutnu.Data.Models.UserPoco
+@using Wutnu.Common 
+
+@{
+    ViewBag.Title = "User Profile";
+}
+<h2>User Profile</h2>
+
+<div class="col-xs-2">
+    <ul class="nav nav-pills nav-stacked" role="tablist">
+        <li role="presentation" class="active"><a href="#settings" aria-controls="settings" role="tab" data-toggle="pill">Settings</a></li>
+        <li role="presentation"><a href="#claims" aria-controls="claims" role="tab" data-toggle="pill">Claims</a></li>
+
+        @if (User.Identity.GetClaim(CustomClaimTypes.AuthType) == WutAuthTypes.B2C)
+        {
+        <li class="profile-link">
+            @Html.ActionLink("Edit Profile", "Profile", "Account", new { area = "" }, new { role = "tab" })
+        </li>
+        }
+        @if (User.Identity.GetClaim(CustomClaimTypes.AuthType) == WutAuthTypes.Unified)
+        {
+        <li class="profile-link">
+            @Html.ActionLink("Edit Profile", "ProfileUnified", "Account", new { area = "" }, new { role = "tab" })
+        </li>
+        }
+        @if (User.Identity.GetClaim(CustomClaimTypes.IdentityProvider) == "local")
+        {
+        <li class="profile-link">
+            @Html.ActionLink("Reset Password", "PasswordReset", "Account", new { area = "" }, new { role = "tab" })
+        </li>
+        }
+    </ul>
+</div>
+<div class="col-xs-10">
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="settings">
+            @Html.Partial("_Settings", Model)
+        </div>
+        <div role="tabpanel" class="tab-pane" id="claims">
+            @Html.Partial("_Claims")
+        </div>
+    </div>
+</div>

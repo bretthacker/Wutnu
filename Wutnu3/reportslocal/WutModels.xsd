@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="WutModels" targetNamespace="http://tempuri.org/WutModels.xsd" xmlns:mstns="http://tempuri.org/WutModels.xsd" xmlns="http://tempuri.org/WutModels.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="WutModels" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="WutModels" msprop:Generator_UserDSName="WutModels">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="History" msprop:Generator_TableClassName="HistoryDataTable" msprop:Generator_TableVarName="tableHistory" msprop:Generator_TablePropName="History" msprop:Generator_RowDeletingName="HistoryRowDeleting" msprop:Generator_RowChangingName="HistoryRowChanging" msprop:Generator_RowEvHandlerName="HistoryRowChangeEventHandler" msprop:Generator_RowDeletedName="HistoryRowDeleted" msprop:Generator_UserTableName="History" msprop:Generator_RowChangedName="HistoryRowChanged" msprop:Generator_RowEvArgName="HistoryRowChangeEvent" msprop:Generator_RowClassName="HistoryRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HistoryId" msprop:Generator_ColumnVarNameInTable="columnHistoryId" msprop:Generator_ColumnPropNameInRow="HistoryId" msprop:Generator_ColumnPropNameInTable="HistoryIdColumn" msprop:Generator_UserColumnName="HistoryId" type="xs:long" minOccurs="0" />
+              <xs:element name="CallDate" msprop:Generator_ColumnVarNameInTable="columnCallDate" msprop:Generator_ColumnPropNameInRow="CallDate" msprop:Generator_ColumnPropNameInTable="CallDateColumn" msprop:Generator_UserColumnName="CallDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="HostIp" msprop:Generator_ColumnVarNameInTable="columnHostIp" msprop:Generator_ColumnPropNameInRow="HostIp" msprop:Generator_ColumnPropNameInTable="HostIpColumn" msprop:Generator_UserColumnName="HostIp" type="xs:string" minOccurs="0" />
+              <xs:element name="RealUrl" msprop:Generator_ColumnVarNameInTable="columnRealUrl" msprop:Generator_ColumnPropNameInRow="RealUrl" msprop:Generator_ColumnPropNameInTable="RealUrlColumn" msprop:Generator_UserColumnName="RealUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="WutLinkId" msprop:Generator_ColumnVarNameInTable="columnWutLinkId" msprop:Generator_ColumnPropNameInRow="WutLinkId" msprop:Generator_ColumnPropNameInTable="WutLinkIdColumn" msprop:Generator_UserColumnName="WutLinkId" type="xs:int" minOccurs="0" />
+              <xs:element name="ShortUrl" msprop:Generator_ColumnVarNameInTable="columnShortUrl" msprop:Generator_ColumnPropNameInRow="ShortUrl" msprop:Generator_ColumnPropNameInTable="ShortUrlColumn" msprop:Generator_UserColumnName="ShortUrl" type="xs:string" minOccurs="0" />
+              <xs:element name="UserName" msprop:Generator_ColumnVarNameInTable="columnUserName" msprop:Generator_ColumnPropNameInRow="UserName" msprop:Generator_ColumnPropNameInTable="UserNameColumn" msprop:Generator_UserColumnName="UserName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

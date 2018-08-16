@@ -1,0 +1,40 @@
+﻿@model HandleErrorInfo
+@{
+    ViewBag.Title = "An Error Occured";
+    ViewBag.SiteName = "An Error Occured";
+    
+}
+<style type="text/css">
+    .body-content { background: #606060; }
+    h1 { margin: 0; padding-top: 6px; color: #FFF; }
+    #content { margin: 0 0 0 15px; position: relative; max-width: 800px; min-width: 512px; }
+        #content img { margin-top: 10px; }
+    #Notes { position: absolute; width: 480px; bottom: 10px; right: 10px; padding: 12px; background: #dcdcdc; margin: 12px 4px 4px 4px; }
+    textarea { max-width: inherit; }
+    #btns input { width: 80px; float: right; margin: 2px; }
+    .wrapper { width: 80%; min-width: 512px; margin-left: auto; margin-right: auto; }
+    #header h1 {color:#3a3a3a;}
+</style>
+<form method="post" action="/Home/IssueInfo">
+    <div class="wrapper">
+        <input type="hidden" id="et" name="et" value="@HttpContext.Current.Items["ErrorID"]" />
+        <div id="header"><h1>500. That's an error.</h1></div>
+        <div id="content">
+            <img alt="Oops" id="errImg" src="~/Content/images/ErrorBG.jpg" style="width:100%;" />
+            <div id="Notes">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-warning" style="font-size:.8em;">@Html.Raw(ViewBag.ErrorMessage)</div>
+                }
+                Any information on what you were doing when this happened would help
+                <div id="info">
+                    <textarea id="comments" name="comments" rows="7" style="width:100%"></textarea>
+                </div>
+                <div id="btns">
+                    <input type="button" class="btn btn-sm" value="Cancel" onclick="location.href = '/'" />
+                    <input type="submit" class="btn btn-sm btn-default" id="SaveForm" value="Save" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

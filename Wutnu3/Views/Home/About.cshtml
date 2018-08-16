@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+<h3>@ViewBag.Message</h3>
+
+<p>This demo application is designed to take advantage of a wide variety of Azure services and features, including:</p>
+<ul>
+    <li>Web Apps - <a href="https://docs.microsoft.com/en-us/azure/app-service-web/" target="_blank">https://docs.microsoft.com/en-us/azure/app-service-web/</a> </li>
+    <li>Blob Storage - <a href="https://docs.microsoft.com/en-us/rest/api/storageservices/Blob-Service-Concepts" target="_blank">https://docs.microsoft.com/en-us/rest/api/storageservices/Blob-Service-Concepts</a> </li>
+    <li>Queue Storage - <a href="https://docs.microsoft.com/en-us/rest/api/storageservices/Queue-Service-Concepts" target="_blank">https://docs.microsoft.com/en-us/rest/api/storageservices/Queue-Service-Concepts</a> </li>
+    <li>Redis Cache - <a href="https://docs.microsoft.com/en-us/azure/redis-cache/ " target="_blank">https://docs.microsoft.com/en-us/azure/redis-cache/</a> </li>
+    <li>SQL Database - <a href="https://docs.microsoft.com/en-us/azure/sql-database/" target="_blank">https://docs.microsoft.com/en-us/azure/sql-database/</a> </li>
+    <li>Azure Active Directory - <a href="https://docs.microsoft.com/en-us/azure/active-directory/" target="_blank">https://docs.microsoft.com/en-us/azure/active-directory/</a> </li>
+    <li>Azure Active Directory B2B - <a href="https://docs.microsoft.com/en-us/azure/active-directory/active-directory-b2b-what-is-azure-ad-b2b" target="_blank">https://docs.microsoft.com/en-us/azure/active-directory/active-directory-b2b-what-is-azure-ad-b2b</a> </li>
+    <li>Azure Active Directory B2C - <a href="https://docs.microsoft.com/en-us/azure/active-directory-b2c/" target="_blank">https://docs.microsoft.com/en-us/azure/active-directory-b2c/</a> </li>
+    <li>Web Jobs - <a href="https://docs.microsoft.com/en-us/azure/app-service-web/web-sites-create-web-jobs" target="_blank">https://docs.microsoft.com/en-us/azure/app-service-web/web-sites-create-web-jobs</a> </li>
+    <li>Resource Manager Templates - <a href="https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-overview#template-deployment" target="_blank">https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-overview#template-deployment</a> </li>
+</ul>
+<h4>Features</h4>
+<ul>
+    <li>Web URLs are shortened, and the application expands them when they are called. This is the basic functionality of any URL shortener 
+    service.</li>
+    <li>Shortened URLs can be created by any user, logged in or not. If a logged-in user creates a link, access is logged each time it is called.</li>
+    <li>Files can be uploaded and <b>stored in Azure Blob Storage</b>. A directory is created for each logged-in user, and files are stored there 
+    when uploaded.</li>
+    <li><b>Uploads are processed directly from the web page to blob storage.</b> Although the storage is marked "private", an upload request by the 
+    user is processed by creation of a SAS token that grants temporary access to perform I/O operations against the private store. This allows 
+    uploads to bypass the web server and interact directly with the blob storage endpoint.</li>
+    <li>The application includes a console app project. This project is designed to interact with the web portal API in conjunction with Azure 
+    Storage, to facilicate <b>batch access to blob storage for uploads and downloads, using Shared Access Signatures</b> to enable temporary 
+    direct access to private storage. The result is an FTP-like experience, managed by the portal.</li>
+    <li>A health check controller is located at /healthcheck. This will test the functionality of critical dependent services and return a 
+    500 error if any issues are encountered. This is useful for Azure Traffic Manager (<a href="https://docs.microsoft.com/en-us/azure/traffic-manager/" target="_blank">https://docs.microsoft.com/en-us/azure/traffic-manager/</a>).
+    The page also includes a basic HTML report of service status.</li>
+    <li>Short URLs are copied to Redis Cache for fast retrieval. As URLs are called and expanded, an audit log is appended. 
+    To ensure performance, Storage Queues are used to queue the log entry, and a Web Job processes the queue and updates the log.</li>
+    <li>User identity is managed by Azure Active Directory. The application that authenticates the site is enabled for multi tenancy. This 
+    enables users from any Azure Active Directory tenant to enable the application in their directory. Users may also be enabled as B2B 
+    guests in the host directory.</li>
+    <li>Azure Active Directory B2C is also enabled. This enables registration of users via social media accounts, or via local accounts 
+    managed by B2C. Using B2C for local accounts eliminates the requirement to manage identities via a local storage mechanism such as a 
+    database - the entire identity lifecycle is outsourced to Azure Active Directory.</li>
+    <li>Coming soon - PowerBI Embedded reports.</li>
+</ul>

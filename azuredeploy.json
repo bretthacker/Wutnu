@@ -1,0 +1,435 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hostingPlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "Your new hosting plan name. This name will be used to form the names of other deployed resources as well."
+      }
+    },
+    "sqlAdministratorLoginPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Sql database server administrator password"
+      }
+    },
+    "B2BGraphKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The app secret for your B2B application in Azure AD (see docs)"
+      }
+    },
+    "tenantB2B": {
+      "type": "string",
+      "metadata": {
+        "description": "The tenant name, like 'contoso.onmicrosoft.com', for your B2B application in Azure AD (see docs)"
+      }
+    },
+    "clientIdB2B": {
+      "type": "string",
+      "metadata": {
+        "description": "The client ID for your B2B application in Azure AD (see docs)"
+      }
+    },
+    "B2BSelfServPortal": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional - URL of a B2B self-service invitation portal (https://docs.microsoft.com/en-us/azure/active-directory/b2b/self-service-portal)"
+      }
+    },
+    "B2CGraphKey": {
+      "type": "string",
+      "metadata": {
+        "description": "The app secret for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "tenantB2C": {
+      "type": "string",
+      "metadata": {
+        "description": "The tenant name, like 'contoso.onmicrosoft.com', for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "clientIdB2C": {
+      "type": "string",
+      "metadata": {
+        "description": "The client ID for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "AdminGroupId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The Group ID in your host tenant containing users authorized to administer the site (view Error logs). If left empty, all users in the local tenant will be granted admin privileges."
+      }
+    },
+    "ida:SUSIPolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_SignInSignUpPolicy",
+      "metadata": {
+        "description": "The sign up sign in policy for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "ida:UserProfilePolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_DefaultProfileEditPolicy",
+      "metadata": {
+        "description": "The user profile policy for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "ida:ResetPwPolicyId": {
+      "type": "string",
+      "defaultValue": "B2C_1_DefaultReset",
+      "metadata": {
+        "description": "The password reset profile policy for your B2C application in Azure AD (see docs)"
+      }
+    },
+    "redisSKUName": {
+      "type": "string",
+      "allowedValues": [ "Basic", "Standard" ],
+      "defaultValue": "Basic"
+    },
+    "redisSKUFamily": {
+      "type": "string",
+      "allowedValues": [ "C", "P" ],
+      "defaultValue": "C",
+      "metadata": {
+        "description": "Select the performance characteristics for your Redis Cache instance (C=Basic or Standard, P=Premium)"
+      }
+    },
+    "redisSKUCapacity": {
+      "type": "string",
+      "allowedValues": [ "0", "1", "2", "3", "4", "5", "6" ],
+      "defaultValue": "0"
+    },
+    "SqlDBEdition": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [ "Basic", "Standard", "Premium" ],
+      "metadata": {
+        "description": "Select the performance characteristics for your SQL Database instance"
+      }
+    },
+    "SqlDBRequestedServiceObjectiveName": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [ "Basic", "S0", "S1", "S2", "P1", "P2", "P3" ],
+      "metadata": {
+        "description": "Describes the performance level for Edition"
+      }
+    },
+    "repoUrl": {
+      "type": "string",
+      "defaultValue": "https://github.com/bretthacker/wutnu.git",
+      "metadata": {
+        "description": "GitHub repo path"
+      }
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "master",
+      "metadata": {
+        "description": "GitHub repo branch"
+      }
+    }
+  },
+  "variables": {
+    "sqlserverName": "[toLower(concat(parameters('hostingPlanName'), '-sql', uniqueString(resourceGroup().id)))]",
+    "WutNuDBName": "[concat(parameters('hostingPlanName'), 'db')]",
+    "sqlAdministratorLogin": "[concat(parameters('hostingPlanName'), '_app')]",
+    "siteName": "[concat(tolower(parameters('hostingPlanName')), '-', uniqueString(resourceGroup().id))]",
+    "redisName": "[toLower(concat(parameters('hostingPlanName'),'cache', uniqueString(resourceGroup().id)))]",
+    "storageAccountName": "[toLower(concat(parameters('hostingPlanName'),'blob', uniqueString(resourceGroup().id)))]",
+    "storageAcctType": "Standard_LRS",
+    "WutNuDBCollation": "SQL_Latin1_General_CP1_CS_AS",
+    "redisUserDBNum": "1",
+    "redisUrlDBNum": "0",
+    "deploymentEnvironment": "Prod",
+    "siteHostingSKU": "Standard",
+    "siteHostingWorkerSize": "0"
+  },
+  "resources": [
+      {
+          "name": "[parameters('hostingPlanName')]",
+          "type": "Microsoft.Web/serverfarms",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2014-06-01",
+          "tags": {
+              "displayName": "WutNuSiteHosting"
+          },
+        "properties": {
+          "name": "[parameters('hostingPlanName')]",
+          "sku": "[variables('siteHostingSKU')]",
+          "workerSize": "[variables('siteHostingWorkerSize')]",
+          "numberOfWorkers": 1
+        }
+      },
+    {
+      "name": "[variables('siteName')]",
+      "type": "Microsoft.Web/sites",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Cache/Redis/', variables('redisName'))]",
+        "[resourceId('Microsoft.Sql/servers', variables('sqlserverName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
+        "displayName": "WebApp"
+      },
+      "properties": {
+        "name": "[variables('siteName')]",
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "siteConfig": {
+          "phpVersion": "",
+          "appSettings": [
+            {
+              "Name": "PROJECT",
+              "Value": "Wutnu3\\Wutnu.Web.csproj"
+            },
+            {
+              "Name": "DomainName",
+              "Value": "[concat(variables('siteName'),'.azurewebsites.net')]"
+            },
+            {
+              "Name": "RedisConnection",
+              "Value": "[concat(variables('redisName'),'.redis.cache.windows.net', ':6380,ssl=True,abortConnect=False,password=', listKeys(resourceId('Microsoft.Cache/Redis', variables('redisName')), '2015-08-01').primaryKey)]"
+            },
+            {
+              "Name": "RedisUrlDBNum",
+              "Value": "[variables('RedisUrlDBNum')]"
+            },
+            {
+              "Name": "RedisUserDBNum",
+              "Value": "[variables('RedisUserDBNum')]"
+            },
+            {
+              "Name": "StorageConnectionString",
+              "Value": "[Concat('DefaultEndpointsProtocol=https:AccountName=',variables('storageAccountName'),':AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+            },
+            {
+              "Name": "AuditQueueName",
+              "Value": "wutqueue"
+            },
+            {
+              "Name": "ActivateWebApiTracing",
+              "Value": "false"
+            },
+            {
+              "Name": "ida:AadInstanceMulti",
+              "Value": "https://login.microsoftonline.com/common"
+            },
+            {
+              "Name": "ida:AadInstanceB2B",
+              "Value": "https://login.microsoftonline.com/{0}"
+            },
+            {
+              "Name": "ida:AadInstanceB2C",
+              "Value": "https://login.microsoftonline.com/{0}/v2.0/.well-known/openid-configuration?p={1}"
+            },
+            {
+              "Name": "ida:RedirectUri",
+              "Value": "[concat('https://', variables('siteName'),'.azurewebsites.net')]"
+            },
+            {
+              "Name": "AdminGroupId",
+              "Value": "[parameters('AdminGroupId')]"
+            },
+            {
+              "Name": "B2BGraphKey",
+              "Value": "[parameters('B2BGraphKey')]"
+            },
+            {
+              "Name": "B2CGraphKey",
+              "Value": "[parameters('B2CGraphKey')]"
+            },
+            {
+              "Name": "ida:TenantB2B",
+              "Value": "[parameters('TenantB2B')]"
+            },
+            {
+              "Name": "ida:ClientIdB2B",
+              "Value": "[parameters('ClientIdB2B')]"
+            },
+            {
+              "Name": "B2BSelfServPortal",
+              "Value": "[parameters('B2BSelfServPortal')]"
+            },
+            {
+              "Name": "ida:TenantB2C",
+              "Value": "[parameters('TenantB2C')]"
+            },
+            {
+              "Name": "ida:ClientIdB2CB2BSelfServPortal",
+              "Value": "[parameters('ClientIdB2C')]"
+            },
+            {
+              "Name": "B2BSelfServPortal",
+              "Value": "[parameters('B2BSelfServPortal')]"
+            },
+            {
+              "Name": "ida:ResetPolicyId",
+              "Value": "[parameters('ida:ResetPwPolicyId')]"
+            },
+            {
+              "Name": "ida:SUSIPolicyId",
+              "Value": "[parameters('ida:SUSIPolicyId')]"
+            },
+            {
+              "Name": "ida:UserProfilePolicyId",
+              "Value": "[parameters('ida:UserProfilePolicyId')]"
+            },
+            {
+              "Name": "ConfigStorageCors",
+              "Value": "true"
+            },
+            {
+              "Name": "Environment",
+              "Value": "[variables('DeploymentEnvironment')]"
+            },
+            {
+              "Name": "LocalReports",
+              "Value": "false"
+            },
+            {
+              "Name": "EnableDashboardLogging",
+              "Value": "true"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "web",
+          "type": "sourcecontrols",
+          "tags": {
+            "displayName": "AppSource"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('siteName'))]"
+          ],
+          "properties": {
+            "repoUrl": "[parameters('repoUrl')]",
+            "branch": "[parameters('branch')]",
+            "IsManualIntegration": true
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "connectionstrings",
+          "type": "config",
+          "dependsOn": [
+            "[concat('Microsoft.Web/sites/', variables('siteName'))]",
+            "[resourceId('Microsoft.Sql/servers', variables('sqlserverName'))]"
+          ],
+          "properties": {
+            "WutNuContext": {
+              "value": "[concat('data source=', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName,';initial catalog=',variables('WutNuDBName'),';user id=',variables('sqlAdministratorLogin'), ';password=',parameters('sqlAdministratorLoginPassword'),';MultipleActiveResultSets=True;App=EntityFramework;')]",
+              "type": "SQLAzure"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "[variables('redisName')]",
+      "type": "Microsoft.Cache/Redis",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "tags": {
+        "displayName": "RedisCache"
+      },
+      "properties": {
+        "sku": {
+          "name": "[parameters('redisSKUName')]",
+          "family": "[parameters('redisSKUFamily')]",
+          "capacity": "[parameters('redisSKUCapacity')]"
+        }
+      }
+    },
+    {
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "tags": {
+        "displayName": "storageAcct"
+      },
+      "properties": {
+        "name": "[variables('storageAccountName')]",
+        "accountType": "[variables('storageAcctType')]"
+      }
+    },
+      {
+          "name": "[variables('sqlserverName')]",
+          "type": "Microsoft.Sql/servers",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2014-04-01-preview",
+          "tags": {
+              "displayName": "sqlserver"
+          },
+        "properties": {
+          "administratorLogin": "[variables('sqlAdministratorLogin')]",
+          "administratorLoginPassword": "[parameters('sqlAdministratorLoginPassword')]"
+        },
+          "resources": [
+              {
+                  "name": "AllowAllWindowsAzureIps",
+                  "type": "firewallrules",
+                  "location": "[resourceGroup().location]",
+                  "apiVersion": "2014-04-01-preview",
+                  "dependsOn": [
+                      "[resourceId('Microsoft.Sql/servers', variables('sqlserverName'))]"
+                  ],
+                  "properties": {
+                      "startIpAddress": "0.0.0.0",
+                      "endIpAddress": "0.0.0.0"
+                  }
+              },
+            {
+              "name": "[variables('WutNuDBName')]",
+              "type": "databases",
+              "location": "[resourceGroup().location]",
+              "apiVersion": "2014-04-01-preview",
+              "tags": {
+                "displayName": "sqldb"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('sqlserverName'))]"
+              ],
+              "properties": {
+                "collation": "[variables('WutNuDBCollation')]",
+                "edition": "[parameters('SqlDBEdition')]",
+                "maxSizeBytes": "1073741824",
+                "requestedServiceObjectiveName": "[parameters('SqlDBRequestedServiceObjectiveName')]"
+              }
+            }
+          ]
+      }
+  ],
+  "outputs": {
+    "sqlFqdn": {
+      "value": "[reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName]",
+      "type": "string"
+    },
+    "sqlName": {
+      "value": "[variables('sqlserverName')]",
+      "type": "string"
+    },
+    "sqlUser": {
+      "value": "[variables('sqlAdministratorLogin')]",
+      "type": "string"
+    },
+    "sqlDbName": {
+      "value": "[variables('WutNuDBName')]",
+      "type": "string"
+    },
+    "websiteName": {
+      "value": "[variables('siteName')]",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+﻿@using Wutnu.Common;
+
+@if (Request.IsAuthenticated)
+{
+    var sName = User.Identity.GetClaim(CustomClaimTypes.FullName);
+
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>@Html.ActionLink("Hello " + sName, "Index", "Profile", routeValues: new { area = "Manage" }, htmlAttributes: new { title = "Manage" })</li>
+            <li>@Html.ActionLink("Log Off", "SignOut", "Account", new { area = "" }, new {})</li>
+        </ul>
+        }
+    }
+    else
+    {
+        <ul class="nav navbar-nav navbar-right">
+            <li>@Html.ActionLink("Log in", "Signin", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "loginLink" })</li>
+        </ul>
+    }
+}

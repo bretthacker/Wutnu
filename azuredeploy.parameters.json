@@ -1,0 +1,27 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "SiteName": {
+      "value": "wutnudemo"
+    },
+    "B2BGraphKey": {
+      "value": "mygraphsecret=="
+    },
+    "tenantB2B": {
+      "value": "contoso.com"
+    },
+    "clientIdB2B": {
+      "value": "my-client-id"
+    },
+    "B2CGraphKey": {
+      "value": "myb2cgraphsecret=="
+    },
+    "tenantB2C": {
+      "value": "contoso.onmicrosoft.com"
+    },
+    "clientIdB2C": {
+      "value": "my-b2c-client-id"
+    }
+  }
+}
