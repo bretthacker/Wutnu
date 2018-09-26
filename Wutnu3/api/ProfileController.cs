@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Wutnu.Business;
 using Wutnu.Data;
 using Wutnu.Data.Models;
@@ -31,7 +32,7 @@ namespace Wutnu.Web.api
 
             return _repo.UpdateUser(data);
         }
-
+        [EnableCors(origins: "https://vuedemo.z21.web.core.window.net", headers: "*", methods: "*", SupportsCredentials = true)]
         public IEnumerable<AssignedUserPoco> GetUsers()
         {
             return _repo.GetAssignedUsers(UserId);

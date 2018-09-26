@@ -7,38 +7,33 @@
 
     //events
     $("#btnSaveUrl").on("click", function () {
-        var data = SiteUtil.GetDataObject("#EditLinkDialog div.modal-body");
-        SiteUtil.AjaxCall("/api/Url/SaveUrl", data, function (res) {
-            $("#EditLinkDialog").modal('hide');
-            ManageMain.LoadLinkTable(res);
-        }, "POST");
+        ManageMain.Save();
     });
     $("#btnDeleteUrl").on("click", function () {
-        var data = SiteUtil.GetDataObject("#EditLinkDialog div.modal-body");
-        SiteUtil.AjaxCall("/api/Url/DeleteUrl", data, function (res) {
-            $("#EditLinkDialog").modal('hide');
-            SiteUtil.ShowMessage("Link deleted", "Operation complete", SiteUtil.AlertImages.success);
-            ManageMain.LoadLinkTable(res);
-        }, "POST");
+        ManageMain.Delete();
     });
 
     $("#IsProtected").on("click", function (o) {
         ManageMain.CheckProtected();
     });
+    var urlcheck = 0;
     $("#ShortUrl").on("keyup", function () {
-        setTimeout(function () {
+        clearTimeout(urlcheck);
+        urlcheck = setTimeout(function () {
             var val = $("#ShortUrl").val();
             var orgVal = $("#ShortUrl").data("orgValue");
             if (val === orgVal) return;
 
             $("#shortUrlStatus").removeClass("glyphicon-ok").removeClass("glyphicon-remove").addClass("glyphicon-time");
-            checkShortLink(val, function (res) {
+            ManageMain.CheckShortLink(val, function (res) {
                 if (!res) {
                     SiteUtil.ShowMessage("That code is in use already - please choose another", "Invalid Short Link", SiteUtil.AlertImages.warning, 3000);
                     $("#ShortUrl").val(orgVal).focus();
                     $("#shortUrlStatus").removeClass("glyphicon-time").addClass("glyphicon-remove");
                     return;
                 }
+                var data = SiteUtil.GetDataObject("#EditLinkDialog div.modal-body");
+                data.ShortUrl = val;
                 $("#shortUrlStatus").removeClass("glyphicon-time").addClass("glyphicon-ok");
                 ManageMain.SetNewShortUrl(data);
             });
@@ -139,7 +134,7 @@ var ManageMain = function () {
         $("#Comments").val(data.Comments);
         $("#UserEmails").val(data.UserEmails);
 
-        $("#EditLinkDialog").data("ShortUrl", data.ShortUrl).modal('show');
+        $("#EditLinkDialog").data("data", data).modal('show');
     };
     function setNewShortUrl(data) {
         var lnk = $("#testShortLink");
@@ -152,7 +147,32 @@ var ManageMain = function () {
     function checkProtected() {
         $("#protectedInfo").css("display", ($("#IsProtected")[0].checked) ? "block" : "none");
     }
+    function saveLink() {
+        if ($("#shortUrlStatus").hasClass("glyphicon-remove")) {
+            SiteUtil.ShowMessage("Please set a valid Short Link before saving", "Invalid Short Link", SiteUtil.AlertImages.error, 3000);
+            $("#ShortUrl").val(orgVal).focus();
+            return;
+        }
+        var data = $("#EditLinkDialog").data("data");
+        data.ShortUrl = $("#ShortUrl").val();
+        data.RealUrl = $("#RealUrl").val();
+        data.IsProtected = $("#IsProtected")[0].checked;
+        data.Comments = $("#Comments").val();
+        data.UserEmail = $("#UserEmails").val();
 
+        SiteUtil.AjaxCall("/api/Url/SaveUrl", data, function (res) {
+            $("#EditLinkDialog").modal('hide');
+            ManageMain.LoadLinkTable(res);
+        }, "POST");
+    }
+    function deleteLink() {
+        var data = SiteUtil.GetDataObject("#EditLinkDialog div.modal-body");
+        SiteUtil.AjaxCall("/api/Url/DeleteUrl", data, function (res) {
+            $("#EditLinkDialog").modal('hide');
+            SiteUtil.ShowMessage("Link deleted", "Operation complete", SiteUtil.AlertImages.success);
+            ManageMain.LoadLinkTable(res);
+        }, "POST");
+    }
     return {
         DoNav: doNav,
         LoadLinks: loadLinks,
@@ -160,6 +180,8 @@ var ManageMain = function () {
         CheckShortLink: checkShortLink,
         ShowDetailDialog: showDetailDialog,
         SetNewShortUrl: setNewShortUrl,
-        CheckProtected: checkProtected
+        CheckProtected: checkProtected,
+        Save: saveLink,
+        Delete: deleteLink
     };
 }();

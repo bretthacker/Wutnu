@@ -6,6 +6,8 @@ namespace Wutnu.Data
 {
     public class WutLinkPoco
     {
+        public int LinkId { get; set; }
+
         public string ShortUrl { get; set; }
 
         public int? UserId { get; set; }
@@ -39,9 +41,10 @@ namespace Wutnu.Data
                     return (o.User != null) ? o.User.PrimaryEmail : o.UserEmail;
                 }
             ));
-
+            
             var res = new WutLinkPoco
             {
+                LinkId=obj.WutLinkId,
                 Comments=obj.Comments,
                 CreateDate=obj.CreateDate,
                 CreatedByIp=obj.CreatedByIp,

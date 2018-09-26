@@ -165,6 +165,10 @@ namespace Wutnu.Common
         public static string GetIdpTenantId(this IIdentity identity)
         {
             var str = identity.GetClaim(CustomClaimTypes.IdentityProvider);
+            if (!Uri.TryCreate(str, UriKind.Absolute, out Uri test))
+            {
+                str = null;
+            }
             return (str==null) ? null : new Uri(str).Segments[1].TrimEnd('/');
         }
     }

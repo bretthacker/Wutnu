@@ -12,6 +12,7 @@ namespace Wutnu
         {
             // Web API configuration and services
             config.Filters.Add(new HandleWebApiException());
+            config.EnableCors();
 
             //config.MapHttpAttributeRoutes();
 

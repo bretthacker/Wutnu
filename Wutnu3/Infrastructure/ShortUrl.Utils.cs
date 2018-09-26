@@ -53,7 +53,7 @@ namespace Infrastructure
         {
             try
             {
-                var item = models.WutLinks.Include("UserAssignments").Single(u => u.ShortUrl == oUrl.ShortUrl);
+                var item = models.WutLinks.Include("UserAssignments").Single(u => u.WutLinkId == oUrl.LinkId);
                 if (item.UserId != UserId)
                 {
                     throw new UnauthorizedAccessException("You attempted to save a URL that is owned by someone else.");

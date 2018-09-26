@@ -1,6 +1,6 @@
 ﻿body {
     padding-top: 50px;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -52,4 +52,31 @@ span.glyphicon {
 
 div.tab-pane {
     margin-bottom:80px;
+}
+footer {
+    bottom: 0px;
+    left: 0px;
+    position: fixed;
+    width: 100%;
+    color: #616161;
+}
+
+    footer div {
+        text-align:center;
+    }
+    footer div p {
+        margin: 20px 40px;
+        display:inline-block;
+    }
+
+.bg-4 {
+    background-color: #f2f2f2;
+}
+/*https://stackoverflow.com/questions/1638223/is-there-a-way-to-word-wrap-long-words-in-a-div*/
+.wordwrap {
+    white-space: pre-wrap; /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap; /* Opera <7 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* IE */
 }
