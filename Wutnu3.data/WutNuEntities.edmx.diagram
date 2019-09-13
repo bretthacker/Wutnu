@@ -15,6 +15,7 @@
         <AssociationConnector Association="wutnu3Model.FK_UserAssignment_User" />
         <AssociationConnector Association="wutnu3Model.FK_WutLink_User" />
         <AssociationConnector Association="wutnu3Model.FK_UserAssignment_WutLink" />
+        <EntityTypeShape EntityType="wutnu3Model.vwHistoryReport" Width="1.5" PointX="3.375" PointY="6.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

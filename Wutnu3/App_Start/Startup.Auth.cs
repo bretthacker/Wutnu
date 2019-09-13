@@ -11,6 +11,12 @@ using System.Configuration;
 using Wutnu.App_Start;
 using Wutnu.Common;
 using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System;
+using System.Web;
+using Wutnu.Data;
+using System.Linq;
 
 namespace Wutnu
 {
@@ -120,21 +126,21 @@ namespace Wutnu
             app.UseOpenIdConnectAuthentication(b2bOptions);
         }
 
-        // Used for avoiding yellow-screen-of-death
-        private async Task AuthenticationFailed(AuthenticationFailedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
+        private async Task AuthenticationFailed(AuthenticationFailedNotification<Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
         {
             notification.HandleResponse();
-            if (notification.Exception.Message == "access_denied")
-            {
-                notification.Response.Redirect("/");
-            }
-            else
-            {
-                var form = await notification.Request.ReadFormAsync();
-                var desc = form.GetValues("error_description")[0].ToString();
-                var message = string.Format("{0} \r\n ({1})", notification.Exception.Message, desc);
-                notification.Response.Redirect("/Home/Error?message=" + message);
-            }
+            string message = notification.ProtocolMessage.ErrorDescription ?? notification.Exception.Message;
+
+            var form = await notification.Request.ReadFormAsync();
+            var desc = form.GetValues("error_description")[0].ToString();
+            message = string.Format("{0} \r\n ({1})", message, desc);
+            var hctx =
+                (HttpContextWrapper)
+                    notification.Request.Environment.Single(e => e.Key == "System.Web.HttpContextBase").Value;
+            var wutContext = DependencyResolver.Current.GetService<WutNuContext>();
+
+            Logging.WriteDebugInfoToErrorLog(message, notification.Exception, wutContext, hctx);
+            notification.Response.Redirect("/Home/Error?message=" + message);
         }
 
         private OpenIdConnectAuthenticationOptions CreateOptionsFromPolicy(string policy)

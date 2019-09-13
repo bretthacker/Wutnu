@@ -64,6 +64,8 @@ namespace Wutnu
                 DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
                 GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
+                SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
+
                 //Settings
                 Settings.Setup(ConfigurationManager.AppSettings);
                 var domainName = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/";

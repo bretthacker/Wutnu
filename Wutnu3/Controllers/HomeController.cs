@@ -174,6 +174,7 @@ namespace Wutnu.Controllers
 
         public ActionResult Error(string message)
         {
+            if (message == null) message = "N/A";
             ViewBag.ErrorMessage = message.Replace("\r\n","<br>");
             return View();
         }

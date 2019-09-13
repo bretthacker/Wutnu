@@ -34,8 +34,9 @@ namespace Wutnu.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserAssignment> UserAssignments { get; set; }
         public virtual DbSet<WutLink> WutLinks { get; set; }
+        public virtual DbSet<vwHistoryReport> vwHistoryReports { get; set; }
     
-        public virtual int usp_AddHistory(string shortUrl, Nullable<System.DateTime> callDate, Nullable<int> userId, string hostIp)
+        public virtual int usp_AddHistory(string shortUrl, Nullable<System.DateTime> callDate, Nullable<int> userId, string hostIp, string latitude, string longitude, string city, string region, string country, string continent, string isp)
         {
             var shortUrlParameter = shortUrl != null ?
                 new ObjectParameter("ShortUrl", shortUrl) :
@@ -53,7 +54,35 @@ namespace Wutnu.Data
                 new ObjectParameter("HostIp", hostIp) :
                 new ObjectParameter("HostIp", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_AddHistory", shortUrlParameter, callDateParameter, userIdParameter, hostIpParameter);
+            var latitudeParameter = latitude != null ?
+                new ObjectParameter("Latitude", latitude) :
+                new ObjectParameter("Latitude", typeof(string));
+    
+            var longitudeParameter = longitude != null ?
+                new ObjectParameter("Longitude", longitude) :
+                new ObjectParameter("Longitude", typeof(string));
+    
+            var cityParameter = city != null ?
+                new ObjectParameter("City", city) :
+                new ObjectParameter("City", typeof(string));
+    
+            var regionParameter = region != null ?
+                new ObjectParameter("Region", region) :
+                new ObjectParameter("Region", typeof(string));
+    
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            var continentParameter = continent != null ?
+                new ObjectParameter("Continent", continent) :
+                new ObjectParameter("Continent", typeof(string));
+    
+            var ispParameter = isp != null ?
+                new ObjectParameter("Isp", isp) :
+                new ObjectParameter("Isp", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_AddHistory", shortUrlParameter, callDateParameter, userIdParameter, hostIpParameter, latitudeParameter, longitudeParameter, cityParameter, regionParameter, countryParameter, continentParameter, ispParameter);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Wutnu.Models;
 using Wutnu.Common;
+using Wutnu.Common.Helpers;
 
 namespace AuditDequeue
 {
@@ -29,7 +30,19 @@ namespace AuditDequeue
             {
                 try
                 {
-                    io.usp_AddHistory(auditInfo.ShortUrl, auditInfo.CallDate, auditInfo.UserId, auditInfo.HostIp);
+                    var ipInfo = IpLookup.Get(auditInfo.HostIp);
+                    io.usp_AddHistory(
+                        auditInfo.ShortUrl, 
+                        auditInfo.CallDate, 
+                        auditInfo.UserId, 
+                        auditInfo.HostIp, 
+                        ipInfo.Latitude, 
+                        ipInfo.Longitude, 
+                        ipInfo.City, 
+                        ipInfo.Region, 
+                        ipInfo.Country, 
+                        ipInfo.Continent, 
+                        ipInfo.Isp);
                     io.SaveChanges();
                 }
                 catch (Exception ex)

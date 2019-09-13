@@ -80,3 +80,20 @@ footer {
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word; /* IE */
 }
+@media all and (max-width:768px) {
+    footer {
+        zoom: 80%;
+    }
+
+    div.jumbotron {
+        height: 160px !important;
+    }
+
+        div.jumbotron img {
+            zoom: 60%;
+        }
+
+        div.jumbotron h2 {
+            font-size: .9em;
+        }
+}

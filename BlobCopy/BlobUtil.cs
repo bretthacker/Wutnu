@@ -8,12 +8,12 @@ using Newtonsoft.Json;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
-using Microsoft.WindowsAzure.Storage.Auth;
 using System.Diagnostics;
 using Wutnu.Common.ErrorMgr;
 using Wutnu.Common;
-using Microsoft.WindowsAzure.Storage.DataMovement;
 using System.Threading;
+using Microsoft.Azure.Storage.DataMovement;
+using Microsoft.Azure.Storage.Auth;
 
 namespace BlobCopy
 {
@@ -107,7 +107,7 @@ namespace BlobCopy
                 
                 context.FileTransferred += _tc_FileTransferred;
 
-                var blob = new CloudBlockBlob(blobUri,credentials);
+                var blob = new Microsoft.Azure.Storage.Blob.CloudBlob(blobUri, credentials);
                 blob.Properties.ContentType = contentType;
                 
                 // Upload a local blob

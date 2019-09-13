@@ -87,7 +87,7 @@
             onUpload: function (id, name) {
                 progItem.id = id;
                 progItem.startTime = new Date();
-                proItem.interval = 0;
+                progItem.interval = 0;
             }
         }
     });

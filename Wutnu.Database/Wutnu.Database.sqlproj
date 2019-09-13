@@ -76,8 +76,10 @@
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="dbo\Stored Procedures\usp_AddHistory.sql" />
     <Build Include="Security\Permissions.sql" />
+    <Build Include="dbo\vwHistoryReport.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Wutnu.Database.publish.xml" />
+    <None Include="SqlSchemaCompare1.scmp" />
   </ItemGroup>
 </Project>

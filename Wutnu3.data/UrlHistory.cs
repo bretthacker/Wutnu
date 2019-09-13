@@ -19,6 +19,13 @@ namespace Wutnu.Data
         public System.DateTime CallDate { get; set; }
         public string HostIp { get; set; }
         public Nullable<int> UserId { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+        public string City { get; set; }
+        public string Region { get; set; }
+        public string Country { get; set; }
+        public string Continent { get; set; }
+        public string Isp { get; set; }
     
         public virtual WutLink WutLink { get; set; }
     }

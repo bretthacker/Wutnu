@@ -47,6 +47,13 @@
           <Property Name="CallDate" Type="datetime" Nullable="false" />
           <Property Name="HostIp" Type="varchar" MaxLength="64" Nullable="false" />
           <Property Name="UserId" Type="int" />
+          <Property Name="Latitude" Type="varchar" MaxLength="50" />
+          <Property Name="Longitude" Type="varchar" MaxLength="50" />
+          <Property Name="City" Type="nvarchar" MaxLength="100" />
+          <Property Name="Region" Type="nvarchar" MaxLength="100" />
+          <Property Name="Country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Continent" Type="nvarchar" MaxLength="50" />
+          <Property Name="Isp" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -82,6 +89,23 @@
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UserId" Type="int" />
           <Property Name="IsAzureBlob" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3\APP_DATA\ASPNET-WUTNU-2.MDF.dbo.vwHistoryReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwHistoryReport">
+          <Key>
+            <PropertyRef Name="ShortUrl" />
+            <PropertyRef Name="RealUrl" />
+            <PropertyRef Name="IsAzureBlob" />
+            <PropertyRef Name="IsProtected" />
+          </Key>
+          <Property Name="UserId" Type="int" />
+          <Property Name="HitDate" Type="nvarchar" MaxLength="4000" />
+          <Property Name="ShortUrl" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RealUrl" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NumHits" Type="int" />
+          <Property Name="IsAzureBlob" Type="bit" Nullable="false" />
+          <Property Name="IsProtected" Type="bit" Nullable="false" />
         </EntityType>
         <Association Name="FK_UrlHistories_ShortUrls">
           <End Role="WutLink" Type="Self.WutLink" Multiplicity="1">
@@ -128,6 +152,13 @@
           <Parameter Name="CallDate" Type="datetime2" Mode="In" />
           <Parameter Name="UserId" Type="int" Mode="In" />
           <Parameter Name="HostIp" Type="varchar" Mode="In" />
+          <Parameter Name="Latitude" Type="varchar" Mode="In" />
+          <Parameter Name="Longitude" Type="varchar" Mode="In" />
+          <Parameter Name="City" Type="nvarchar" Mode="In" />
+          <Parameter Name="Region" Type="nvarchar" Mode="In" />
+          <Parameter Name="Country" Type="nvarchar" Mode="In" />
+          <Parameter Name="Continent" Type="nvarchar" Mode="In" />
+          <Parameter Name="Isp" Type="nvarchar" Mode="In" />
         </Function>
         <EntityContainer Name="wutnu3ModelStoreContainer">
           <EntitySet Name="ErrorLogs" EntityType="Self.ErrorLogs" Schema="dbo" store:Type="Tables" />
@@ -136,6 +167,17 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAssignment" EntityType="Self.UserAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WutLink" EntityType="Self.WutLink" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vwHistoryReport" EntityType="Self.vwHistoryReport" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwHistoryReport].[UserId] AS [UserId], 
+    [vwHistoryReport].[HitDate] AS [HitDate], 
+    [vwHistoryReport].[ShortUrl] AS [ShortUrl], 
+    [vwHistoryReport].[RealUrl] AS [RealUrl], 
+    [vwHistoryReport].[NumHits] AS [NumHits], 
+    [vwHistoryReport].[IsAzureBlob] AS [IsAzureBlob], 
+    [vwHistoryReport].[IsProtected] AS [IsProtected]
+    FROM [dbo].[vwHistoryReport] AS [vwHistoryReport]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_UrlHistories_ShortUrls" Association="Self.FK_UrlHistories_ShortUrls">
             <End Role="WutLink" EntitySet="WutLink" />
             <End Role="UrlHistory" EntitySet="UrlHistory" />
@@ -183,6 +225,13 @@
             <Parameter Name="CallDate" Mode="In" Type="DateTime" />
             <Parameter Name="UserId" Mode="In" Type="Int32" />
             <Parameter Name="HostIp" Mode="In" Type="String" />
+            <Parameter Name="Latitude" Mode="In" Type="String" />
+            <Parameter Name="Longitude" Mode="In" Type="String" />
+            <Parameter Name="City" Mode="In" Type="String" />
+            <Parameter Name="Region" Mode="In" Type="String" />
+            <Parameter Name="Country" Mode="In" Type="String" />
+            <Parameter Name="Continent" Mode="In" Type="String" />
+            <Parameter Name="Isp" Mode="In" Type="String" />
           </FunctionImport>
           <EntitySet Name="Reports" EntityType="wutnu3Model.Report" />
           <EntitySet Name="UrlHistories" EntityType="wutnu3Model.UrlHistory" />
@@ -205,6 +254,7 @@
             <End Role="WutLink" EntitySet="WutLinks" />
             <End Role="UserAssignment" EntitySet="UserAssignments" />
           </AssociationSet>
+          <EntitySet Name="vwHistoryReports" EntityType="wutnu3Model.vwHistoryReport" />
           </EntityContainer>
         <EntityType Name="Report">
           <Key>
@@ -226,6 +276,13 @@
           <Property Name="HostIp" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="false" />
           <Property Name="UserId" Type="Int32" />
           <NavigationProperty Name="WutLink" Relationship="wutnu3Model.FK_UrlHistories_ShortUrls" FromRole="UrlHistory" ToRole="WutLink" />
+          <Property Name="Latitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Continent" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Isp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -323,6 +380,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="vwHistoryReport">
+          <Key>
+            <PropertyRef Name="ShortUrl" />
+            <PropertyRef Name="RealUrl" />
+            <PropertyRef Name="IsAzureBlob" />
+            <PropertyRef Name="IsProtected" />
+          </Key>
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="HitDate" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="ShortUrl" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="RealUrl" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NumHits" Type="Int32" />
+          <Property Name="IsAzureBlob" Type="Boolean" Nullable="false" />
+          <Property Name="IsProtected" Type="Boolean" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -368,6 +440,13 @@
           <EntitySetMapping Name="UrlHistories">
             <EntityTypeMapping TypeName="wutnu3Model.UrlHistory">
               <MappingFragment StoreEntitySet="UrlHistory">
+                <ScalarProperty Name="Isp" ColumnName="Isp" />
+                <ScalarProperty Name="Continent" ColumnName="Continent" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="HostIp" ColumnName="HostIp" />
                 <ScalarProperty Name="CallDate" ColumnName="CallDate" />
@@ -411,6 +490,19 @@
                 <ScalarProperty Name="ShortUrl" ColumnName="ShortUrl" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="WutLinkId" ColumnName="WutLinkId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwHistoryReports">
+            <EntityTypeMapping TypeName="wutnu3Model.vwHistoryReport">
+              <MappingFragment StoreEntitySet="vwHistoryReport">
+                <ScalarProperty Name="IsProtected" ColumnName="IsProtected" />
+                <ScalarProperty Name="IsAzureBlob" ColumnName="IsAzureBlob" />
+                <ScalarProperty Name="NumHits" ColumnName="NumHits" />
+                <ScalarProperty Name="RealUrl" ColumnName="RealUrl" />
+                <ScalarProperty Name="ShortUrl" ColumnName="ShortUrl" />
+                <ScalarProperty Name="HitDate" ColumnName="HitDate" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
