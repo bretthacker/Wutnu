@@ -158,7 +158,8 @@ var ManageMain = function () {
         data.RealUrl = $("#RealUrl").val();
         data.IsProtected = $("#IsProtected")[0].checked;
         data.Comments = $("#Comments").val();
-        data.UserEmail = $("#UserEmails").val();
+        data.UserEmails = $("#UserEmails").val();
+        data.UserEmailColl = data.UserEmails.split(",");
 
         SiteUtil.AjaxCall("/api/Url/SaveUrl", data, function (res) {
             $("#EditLinkDialog").modal('hide');

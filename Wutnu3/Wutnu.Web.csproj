@@ -543,6 +543,9 @@
     <Content Include="reportslocal\TrafficReport.cshtml" />
     <Content Include="Areas\Manage\Views\web.config" />
     <Content Include="Areas\Manage\Views\_ViewStart.cshtml" />
+    <None Include="Properties\PublishProfiles\wut - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\wutnublh - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\wutnublh2 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\WutnuWeb - Web Deploy.pubxml" />
     <None Include="reportslocal\WutModels.xsd">
       <Generator>MSDataSetGenerator</Generator>
