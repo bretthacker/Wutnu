@@ -17,15 +17,19 @@ namespace Wutnu.Areas.Manage.Controllers
 
         // GET: Gen
         [HttpPost]
-        public ActionResult Index(string url)
+        public ActionResult Index(WutLink oUrl)
         {
             //create the record
-            var oUrl = new WutLink
-            {
-                RealUrl = url,
-                CreateDate = DateTime.UtcNow,
-                CreatedByIp = Request.UserHostAddress
-            };
+            //var oUrl = new WutLink
+            //{
+            //    RealUrl = url,
+            //    CreateDate = DateTime.UtcNow,
+            //    CreatedByIp = Request.UserHostAddress,
+            //    UseDelay = useDelay
+            //};
+            oUrl.CreateDate = DateTime.UtcNow;
+            oUrl.CreatedByIp = Request.UserHostAddress;
+
             //tag it if logged in, for posterity or cool reporting later
             if (User.Identity.IsAuthenticated)
             {

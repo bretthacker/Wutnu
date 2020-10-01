@@ -28,6 +28,8 @@ namespace Wutnu.Data
 
         public bool UserAuthenticated { get; set; }
 
+        public bool UseDelay { get; set; }
+
         public List<string> UserEmailColl { get; set; }
 
         public WutLinkPoco()
@@ -53,7 +55,8 @@ namespace Wutnu.Data
                 RealUrl = obj.RealUrl,
                 ShortUrl = obj.ShortUrl,
                 UserEmails = emails, 
-                IsAzureBlob = obj.IsAzureBlob
+                IsAzureBlob = obj.IsAzureBlob,
+                UseDelay = obj.UseDelay
             };
 
             res.UserEmailColl.AddRange(obj.UserAssignments.Select(u => u.UserEmail).ToList());

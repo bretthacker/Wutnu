@@ -157,7 +157,15 @@ namespace Wutnu.Controllers
             var message = JsonConvert.SerializeObject(msg);
             WutQueue.AddMessage(queue, message);
 
-            return Redirect(res.RealUrl);
+            if (res.UseDelay)
+            {
+                ViewBag.RealUrl = res.RealUrl;
+                return View("redir");
+            }
+            else
+            {
+                return Redirect(res.RealUrl);
+            }
         }
 
         public ActionResult Missing()

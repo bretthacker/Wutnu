@@ -8,6 +8,7 @@
     [Comments]    NVARCHAR (MAX) NULL,
     [UserId]      INT            NULL,
     [IsAzureBlob] BIT            DEFAULT ((0)) NOT NULL,
+    [UseDelay] BIT NOT NULL DEFAULT ((0)), 
     CONSTRAINT [PK_ShortUrls] PRIMARY KEY CLUSTERED ([WutLinkId] ASC),
     CONSTRAINT [FK_WutLink_User] FOREIGN KEY ([UserId]) REFERENCES [dbo].[User] ([UserId])
 );

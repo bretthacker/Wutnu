@@ -21,5 +21,7 @@ namespace Wutnu.Data
         public Nullable<int> NumHits { get; set; }
         public bool IsAzureBlob { get; set; }
         public bool IsProtected { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

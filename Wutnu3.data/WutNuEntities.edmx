@@ -89,9 +89,10 @@
           <Property Name="Comments" Type="nvarchar(max)" />
           <Property Name="UserId" Type="int" />
           <Property Name="IsAzureBlob" Type="bit" Nullable="false" />
+          <Property Name="UseDelay" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3\APP_DATA\ASPNET-WUTNU-2.MDF.dbo.vwHistoryReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'C:\USERS\BHACKER\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3\APP_DATA\ASPNET-WUTNU-2.MDF.dbo.vwHistoryReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwHistoryReport">
           <Key>
             <PropertyRef Name="ShortUrl" />
@@ -106,6 +107,8 @@ warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3
           <Property Name="NumHits" Type="int" />
           <Property Name="IsAzureBlob" Type="bit" Nullable="false" />
           <Property Name="IsProtected" Type="bit" Nullable="false" />
+          <Property Name="Latitude" Type="varchar" MaxLength="50" />
+          <Property Name="Longitude" Type="varchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_UrlHistories_ShortUrls">
           <End Role="WutLink" Type="Self.WutLink" Multiplicity="1">
@@ -175,7 +178,9 @@ warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3
     [vwHistoryReport].[RealUrl] AS [RealUrl], 
     [vwHistoryReport].[NumHits] AS [NumHits], 
     [vwHistoryReport].[IsAzureBlob] AS [IsAzureBlob], 
-    [vwHistoryReport].[IsProtected] AS [IsProtected]
+    [vwHistoryReport].[IsProtected] AS [IsProtected], 
+    [vwHistoryReport].[Latitude] AS [Latitude], 
+    [vwHistoryReport].[Longitude] AS [Longitude]
     FROM [dbo].[vwHistoryReport] AS [vwHistoryReport]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_UrlHistories_ShortUrls" Association="Self.FK_UrlHistories_ShortUrls">
@@ -325,6 +330,7 @@ warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3
           <NavigationProperty Name="User" Relationship="wutnu3Model.FK_WutLink_User" FromRole="WutLink" ToRole="User" />
           <NavigationProperty Name="UserAssignments" Relationship="wutnu3Model.FK_UserAssignment_WutLink" FromRole="WutLink" ToRole="UserAssignment" />
           <Property Name="IsAzureBlob" Type="Boolean" Nullable="false" />
+          <Property Name="UseDelay" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_UrlHistories_ShortUrls">
           <End Type="wutnu3Model.WutLink" Role="WutLink" Multiplicity="1">
@@ -394,6 +400,8 @@ warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3
           <Property Name="NumHits" Type="Int32" />
           <Property Name="IsAzureBlob" Type="Boolean" Nullable="false" />
           <Property Name="IsProtected" Type="Boolean" Nullable="false" />
+          <Property Name="Latitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Longitude" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -481,6 +489,7 @@ warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3
           <EntitySetMapping Name="WutLinks">
             <EntityTypeMapping TypeName="wutnu3Model.WutLink">
               <MappingFragment StoreEntitySet="WutLink">
+                <ScalarProperty Name="UseDelay" ColumnName="UseDelay" />
                 <ScalarProperty Name="IsAzureBlob" ColumnName="IsAzureBlob" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="RealUrl" ColumnName="RealUrl" />
@@ -496,6 +505,8 @@ warning 6002: The table/view 'C:\USERS\BRHACKE\ONEDRIVE\DEV\WUTNU3\WUTNU3\WUTNU3
           <EntitySetMapping Name="vwHistoryReports">
             <EntityTypeMapping TypeName="wutnu3Model.vwHistoryReport">
               <MappingFragment StoreEntitySet="vwHistoryReport">
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="IsProtected" ColumnName="IsProtected" />
                 <ScalarProperty Name="IsAzureBlob" ColumnName="IsAzureBlob" />
                 <ScalarProperty Name="NumHits" ColumnName="NumHits" />

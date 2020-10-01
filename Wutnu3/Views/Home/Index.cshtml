@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-@using (Html.BeginForm("Index", "Manage/Gen" )) 
+@using (Html.BeginForm("Index", "Manage/Gen", System.Web.Mvc.FormMethod.Post)) 
 {
     <div class="jumbotron">
         <img style="width:150px;float:right;" src="~/Content/wut.png" />
@@ -22,8 +22,9 @@
                 <span class="btn btn-xs pull-right" id="lnkReset">Reset</span>
                 <h1>wut.nu</h1>
                 <div class="panel wut">
-                    <input class="form-control" type="text" name="url" id="lnkUrl" value="@ViewBag.NavigateUrl" />
+                    <input class="form-control" type="text" name="RealUrl" id="lnkUrl" value="@ViewBag.NavigateUrl" />
                     <input class="btn btn-info" type="submit" value="Create Short URL" />
+                    <input type="checkbox" name="UseDelay" id="UseDelay" value="true" /> <label for="UseDelay">Include redirect delay</label>
                 </div>
                 <div class="panel wut">
                     Your new shortened URL is :

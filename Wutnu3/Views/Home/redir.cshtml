@@ -1,0 +1,36 @@
+﻿
+@{
+    Layout = null;
+    var redir = ViewBag.RealUrl;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>It's Zuck-O-Licious</title>
+    <meta http-equiv="refresh" content="5; url=@redir">
+    <style type="text/css">
+        body div {
+            width:70%;
+            margin-left:auto;
+            margin-right:auto;
+            padding:40px;
+            text-align:center;
+            margin-top:100px;
+            font-size:1.4em;
+            background-color:#cdcdcd;
+            border:1px solid #7a7a7a;
+        }
+    </style>
+</head>
+<body>
+    <div> 
+        <p>
+            You will be taken to your destination site in 5 seconds, please stand by...
+        </p>
+        <img src="~/Content/images/ajax-loader.png" />
+    </div>
+</body>
+</html>
