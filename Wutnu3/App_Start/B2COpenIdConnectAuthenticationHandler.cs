@@ -281,7 +281,7 @@ namespace Wutnu.App_Start
                     return null;
                 }
 
-                // Enable Per-Policy Metadata Retreival
+                // Enable Per-Policy Metadata Retrieval
                 if (properties.Dictionary.TryGetValue(PolicyParameter, out policy))
                 {
                     B2CConfigurationManager mgr = Options.ConfigurationManager as B2CConfigurationManager;
